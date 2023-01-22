@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+    red-do-snapserver:
+        volumes:
+            - './etc/snapserver.conf:/etc/snapserver.conf'
+            - './config/snapserver/:/root/.config/snapserver/'
+#            - "./tmp/music/:/tmp/sharesound/"
+        restart: always
+#        ports:
+#            - '1704:1704'
+#            - '1705:1705'
+#            - '1780:1780'
+        container_name: mr-do-snapserver
+        network_mode: host
+        environment:
+            - DEVICE_NAME=Snapserver
+        image: 'riemerk/mr-do-snapserver:latest'
