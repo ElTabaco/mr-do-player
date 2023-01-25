@@ -9,23 +9,25 @@ _Note: You need a Spotify premium account._
 ## Building the images
 
 * The following lines will build _and push_ your image. Use the `build` make target in order to just build the image locally.
-Build:
-    Clon repo
-    gon in folder
-    modify build.sh if you have extra wishess
+###Build:
+    Clon repository
+    go inside folder
+    modify build.sh if you have extra whishess
  ```   
     ./build.sh
 ```
 
-Build maual:
+###Build manual:
 ```
     docker build -t riemer/mr-do-player --build-arg ARCH=arm64 .
 ```
 
-Then, on your PC:
-```
-    make manifest IMAGE_NAME=my/image
-```
+Images:
+###### ARM64
+[![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-snapserver/latest?style=flat-square)
+[![docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-snapserver/latest.svg)](https://hub.docker.com/r/riemerk/mr-do-snapserver/)
+
+
 
 Run:
     See docker compose file
