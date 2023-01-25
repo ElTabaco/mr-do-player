@@ -8,7 +8,7 @@ _Note: You need a Spotify premium account.
 
 ## Building the images
 
-* The following lines will build _and push_ your image. Use the `build` make target in order to just build the image locally.
+* SHort example how to build your image. Use the `build.sh` in order to just build the image locally.
 ### Build:
     Clon repository
     go inside folder
