@@ -7,7 +7,7 @@ FROM ${ARCH}/alpine:${ALPINE_BASE} AS librespot
 WORKDIR /librespot
 
 RUN apk -U add \
-      cargo portaudio-dev protobuf-dev
+    cargo portaudio-dev protobuf-dev
 
 RUN cargo install librespot
 
@@ -45,33 +45,33 @@ RUN apk -U add \
 
 
 RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION https://github.com/badaix/snapcast.git \
-   && cd snapcast \
-   && cmake -S . -B build \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-        -DBUILD_WITH_PULSE=OFF \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DBUILD_CLIENT=OFF \
-  &&  cmake --build build --parallel 3
+    && cd snapcast \
+    && cmake -S . -B build \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+    -DBUILD_WITH_PULSE=OFF \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_CLIENT=OFF \
+    &&  cmake --build build --parallel 3
 
 FROM node:alpine as snapweb
 
 RUN apk -U add build-base git \
- && npm install -g typescript \
- && git clone https://github.com/badaix/snapweb \
- && make -C snapweb
+    && npm install -g typescript \
+    && git clone https://github.com/badaix/snapweb \
+    && make -C snapweb
 
 # Final stage
 FROM alpine:${ALPINE_BASE} AS mr-do-snapserver
 LABEL maintainer="riemerk"
 
 RUN apk add --no-cache \
-        alsa-lib \
-        avahi-libs \
-        expat \
-        flac \
-        libvorbis \
-        opus \
-        soxr \
+    alsa-lib \
+    avahi-libs \
+    expat \
+    flac \
+    libvorbis \
+    opus \
+    soxr \
     && rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
 
 COPY --from=snapserver snapcast/bin/snapserver /usr/local/bin/
