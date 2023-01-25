@@ -40,4 +40,4 @@ See docker compose file
 All code all i reuse is liked direkt to the main creator in Doker file.
 
 Main credits: 
-[Snapcast from badaix](https://github.com/badaix/snapcast)
+[Snapcast](https://github.com/badaix/snapcast) from badaix
