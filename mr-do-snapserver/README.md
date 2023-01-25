@@ -10,20 +10,20 @@ _Note: You need a Spotify premium account.
 
 * SHort example how to build your image. Use the `build.sh` in order to just build the image locally.
 ### Build:
-    Clon repository
-    go inside folder
-    modify build.sh if you have extra whishess
- ```   
-    ./build.sh
+* Clon repository
+* go inside folder
+* modify build.sh if you have extra whishess
+```   
+./build.sh
 ```
 
 ### Build manual:
 ```
-    docker build -t riemer/mr-do-player --build-arg ARCH=arm64 .
+docker build -t riemer/mr-do-player --build-arg ARCH=arm64 .
 ```
 
 ## Run:
-    See docker compose file
+See docker compose file
 
 # Images:
 ###### ARM64
