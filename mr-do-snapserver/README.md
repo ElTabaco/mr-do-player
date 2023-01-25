@@ -24,10 +24,8 @@ _Note: You need a Spotify premium account._
 
 #Images:
 ###### ARM64
-[![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-snapserver/latest?style=flat-square)]
-[![docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-snapserver)]
-
-
+[docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-snapserver/latest?style=flat-square)
+[docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-snapserver)
 
 Run:
     See docker compose file
