@@ -1,4 +1,4 @@
-# red-do-player
+# mr-do-player
 
 Run a [Snapcast](https://github.com/badaix/snapcast) server with [Spotify support](https://github.com/librespot-org/librespot) as a Docker container.
 
