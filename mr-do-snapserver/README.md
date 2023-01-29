@@ -21,7 +21,7 @@ _Note: You need a Spotify premium account._
 ### Build manual:
 
 ```console
-docker build -t riemer/mr-do-player --build-arg ARCH=arm64 .
+docker build -t riemer/mr-do-snapserver --build-arg ARCH=arm64 .
 ```
 
 ## Run:
@@ -37,7 +37,7 @@ See docker compose file
    
 ### Notes:
 
-All code all i reuse is liked direkt to the main creator in Doker file.
+All code reuse is liked direkt to the main creator in Doker file.
 
 Main credits: 
 [Snapcast](https://github.com/badaix/snapcast) from badaix

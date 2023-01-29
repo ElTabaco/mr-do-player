@@ -6,12 +6,12 @@ services:
         volumes:
             - './etc/snapserver.conf:/etc/snapserver.conf'
             - './config/snapserver/:/root/.config/snapserver/'
-        #            - "./tmp/music/:/tmp/sharesound/"
+        #            - './tmp/music/:/tmp/music'
         network_mode: host
         #        ports:
-        #            - '1704:1704'
-        #            - '1705:1705'
-        #            - '1780:1780'
+        #            - 1704:1704
+        #            - 1705:1705
+        #            - 1780:1780
         environment:
             - DEVICE_NAME=Snapserver
             - TZ=Europe/Berlin
