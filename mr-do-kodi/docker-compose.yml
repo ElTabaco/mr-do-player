@@ -1,0 +1,54 @@
+version: '3.3'
+services:
+    kodi-mariadb:
+        image: linuxserver/mariadb
+        container_name: kodi-mariadb
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - MYSQL_ROOT_PASSWORD=kodi
+            - TZ=Europe/Berlin
+        volumes:
+            - ./mariadb:/config
+        ports:
+            - 3306:3306
+        restart: unless-stopped
+    kodi-headless:
+        image: fhriley/kodi-headless-novnc:Nexus
+        container_name: kodi-headless
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - KODI_DB_HOST=kodi-mariadb
+            - KODI_DB_USER=root
+            - KODI_DB_PASS=kodi
+            - TZ=Europe/Berlin
+        volumes:
+            - ./tmp/music/:/tmp/music/
+            - ./etc/asound.conf:/etc/asound.conf
+            - ./kodi_data:/data
+        ports:
+            - 5900:5900/tcp
+            - 8000:8000/tcp
+            - 8083:8080
+            - 9090:9090
+            - 9777:9777/udp
+        depends_on:
+            - kodi-mariadb
+        restart: unless-stopped
+    mr-do-snapserver:
+        image: 'riemerk/mr-do-snapserver:latest'
+        container_name: mr-do-snapserver
+        volumes:
+            - './etc/snapserver.conf:/etc/snapserver.conf'
+            - './config/snapserver/:/root/.config/snapserver/'
+            - './tmp/music/:/tmp/music'
+        network_mode: host
+        #        ports:
+        #            - 1704:1704
+        #            - 1705:1705
+        #            - 1780:1780
+        environment:
+            - DEVICE_NAME=Snapserver
+            - TZ=Europe/Berlin
+        restart: unless-stopped
