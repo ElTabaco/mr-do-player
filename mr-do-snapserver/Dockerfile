@@ -1,7 +1,7 @@
 ARG ALPINE_BASE="3.17"
 ARG ARCH=arm64
 
-FROM ${ARCH}/alpine:${ALPINE_BASE} AS librespot
+FROM alpine:${ALPINE_BASE} AS librespot
 # source: https://github.com/librespot-org/librespot
 
 WORKDIR /librespot

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<playlist xmlns="http://xspf.org/ns/0/" xmlns:vlc="http://www.videolan.org/vlc/playlist/ns/0/" version="1">
+	<title>Playlist</title>
+	<trackList>
+		<track>
+			<location>http://stream-tx4.radioparadise.com:80/aac-128</location>
+			<title>Radio Paradise (128k aac)</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>0</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://ice1.somafm.com/groovesalad-128-aac</location>
+			<title>Groove Salad [SomaFM]</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>1</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://37.251.146.169:7800/stream</location>
+			<title>RADIO CLASIC JAZZ</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>2</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://185.33.21.112:80/ajazz_128</location>
+			<title>1.FM - Adore Jazz Radio</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>3</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://199.180.75.118:80/stream</location>
+			<title>JAZZGROOVE.org - LAID-BACK JAZZ - The Jazz Groove. Ad Free. (East)</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>4</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://209.95.50.189:8172/stream</location>
+			<title>WMTG</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>5</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://146.71.124.10:8200/stream</location>
+			<title>24-7 Reggae</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>6</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://142.4.217.133:8603/stream</location>
+			<title>One Love Radio Live</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>7</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://37.59.47.192:8376/stream</location>
+			<title>Barfly Radio</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>8</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://5.189.142.165:2304/stream</location>
+			<title>Chillout Zone</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>9</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://s10.voscast.com:9942</location>
+			<title>Velvet 96.8</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>10</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://167.114.155.170:8036/stream</location>
+			<title>Austin Blues Radio</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>11</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://94.23.159.187:9998/stream</location>
+			<title>Frank Sinatra Radio</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>12</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+		<track>
+			<location>http://opml.radiotime.com/Tune.ashx?id=s292077</location>
+			<title>Radio City Party Hit Mix</title>
+			<extension application="http://www.videolan.org/vlc/playlist/0">
+				<vlc:id>13</vlc:id>
+				<vlc:option>network-caching=1000</vlc:option>
+			</extension>
+		</track>
+	</trackList>
+	<extension application="http://www.videolan.org/vlc/playlist/0">
+		<vlc:item tid="0"/>
+		<vlc:item tid="1"/>
+		<vlc:item tid="2"/>
+		<vlc:item tid="3"/>
+		<vlc:item tid="4"/>
+		<vlc:item tid="5"/>
+		<vlc:item tid="6"/>
+		<vlc:item tid="7"/>
+		<vlc:item tid="8"/>
+		<vlc:item tid="9"/>
+		<vlc:item tid="10"/>
+		<vlc:item tid="11"/>
+		<vlc:item tid="12"/>
+		<vlc:item tid="13"/>
+	</extension>
+</playlist>
+
+
+"uri":"http://rs5.stream24.net/charivari-hitmix.mp3?ref=tunein.com&DIST=TuneIn&TGT=TuneIn&maxServers=2&partnertok=eyJhbGciOiJIUzI1NiIsImtpZCI6InR1bmVpbiIsInR5cCI6IkpXVCJ9.eyJ0cnVzdGVkX3BhcnRuZXIiOnRydWUsImlhdCI6MTY0MzM5MzgzOSwiaXNzIjoidGlzcnYifQ.s4OSdbqUwAW2xFsWY6cya17A_xeBQyovhCt4nsUw3Uo
+
+"title":"DJ ENRICO OSTENDORF - PARTYHITMIX","icon":"fa-microphone"},
+
+{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s292077",
+"title":"Radio City Party Hit Mix","icon":"fa-microphone"},
+
+
+{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s242271",
+"title":"Surf Shack Radio","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s261587",
+"title":"RauteMusik PARTYHITS","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s24862",
+"title":"SRF 3","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s15446",
+"title":"SRF 1 Bern Freiburg","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s267508",
+"title":"RPR1. Apr  s-Ski","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s253392",
+"title":"Ballermann Radio Top 100","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s248562",
+"title":"Jovem Pan Tomorrowland","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s122381",
+"title":"Partyradio24","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s219266",
+"title":"Schlager Radio (Switzerland)","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s303732",
+"title":"Radio Paloma - Partyschlager","icon":"fa-microphone"},{"service":"webradio","uri":"http://opml.radiotime.com/Tune.ashx?id=s303733",
+"title":"Radio Paloma - Fresh","icon":"fa-microphone"},{"service":"webradio","uri":"http://sunshineradio.ice.infomaniak.ch/sunshineradio-128.mp3",
+"title":"KETCHUP - THE KETCHUP SONG (ASEREJE)","icon":"fa-microphone"}]
+
