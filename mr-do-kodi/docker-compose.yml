@@ -22,6 +22,7 @@ services:
             - KODI_DB_HOST=kodi-mariadb
             - KODI_DB_USER=root
             - KODI_DB_PASS=kodi
+            - DEVICE_NAME=Kodi
             - TZ=Europe/Berlin
         volumes:
             - ./tmp/music/:/tmp/music/
@@ -37,7 +38,7 @@ services:
             - kodi-mariadb
         restart: unless-stopped
     mr-do-snapserver:
-        image: 'riemerk/mr-do-snapserver:latest'
+        image: riemerk/mr-do-snapserver:latest
         container_name: mr-do-snapserver
         volumes:
             - './etc/snapserver.conf:/etc/snapserver.conf'

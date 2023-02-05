@@ -1,7 +1,7 @@
 version: '3.3'
 services:
     mr-do-snapserver:
-        image: 'riemerk/mr-do-snapserver:latest'
+        image: riemerk/mr-do-snapserver:latest
         container_name: mr-do-snapserver
         volumes:
             - './etc/snapserver.conf:/etc/snapserver.conf'

@@ -1,5 +1,8 @@
 # mr-do-player
 
+[![Build Images](https://github.com/riemerk/mr-do-snapserver/actions/workflows/actions.yml/badge.svg?branch=master)](https://github.com/riemerk/mr-do-snapserver/actions/workflows/actions.yml)
+
+
 Run a [Snapcast](https://github.com/badaix/snapcast) server with [Spotify support](https://github.com/librespot-org/librespot) as a Docker container.
 
 Free for everyone to bring your modifikations with a branch to all who like to use and improve.
@@ -24,9 +27,13 @@ _Note: You need a Spotify premium account._
 docker build -t riemer/mr-do-snapserver --build-arg ARCH=arm64 .
 ```
 
-## Run:
+## Configuration:
+* See docker compose file
 
-See docker compose file
+## Run:
+```console
+docker-compose up -d
+```
 
 # Images:
 
@@ -37,7 +44,7 @@ See docker compose file
    
 ### Notes:
 
-All code reuse is liked direkt to the main creator in Doker file.
+All reused code from main creators is linked direkt in Doker file.
 
 Main credits: 
 [Snapcast](https://github.com/badaix/snapcast) from badaix
