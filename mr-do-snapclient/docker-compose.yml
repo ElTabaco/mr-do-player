@@ -8,8 +8,7 @@ services:
             - PGID=1000
             - DEVICE_NAME=Snapclient
             - TZ=Europe/Berlin
-        network_mode: host
         devices:
             - /dev/snd
-        hostname: 192.168.1.10
+        hostname: 172.0.0.1
         restart: unless-stopped
