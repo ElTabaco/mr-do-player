@@ -18,8 +18,6 @@ services:
             - 8083:8080
             - 9090:9090
             - 9777:9777/udp
-        depends_on:
-            - kodi-mariadb
         restart: unless-stopped
     mr-do-snapserver:
         image: riemerk/mr-do-snapserver:latest
