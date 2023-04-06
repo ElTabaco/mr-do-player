@@ -13,6 +13,7 @@ services:
             - ./etc/asound.conf:/etc/asound.conf
             - ./kodi_data:/data
         ports:
+            - 1900:1900
             - 5900:5900/tcp
             - 8000:8000/tcp
             - 8083:8080

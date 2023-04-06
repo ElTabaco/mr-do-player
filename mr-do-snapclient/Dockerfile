@@ -1,10 +1,8 @@
 ARG ARCH=arm64
 
-FROM ${ARCH}/alpine as snapclient
+FROM alpine as snapclient
 ARG SNAPCAST_VERSION=master
 WORKDIR /root
-# Dummy file is needed, because there's no conditional copy
-COPY dummy qemu-*-static /usr/bin/
 
 RUN apk -U add \
     alsa-lib-dev \
@@ -30,10 +28,8 @@ RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION https://github.co
     -DBUILD_SERVER=OFF .. \
     && cmake --build build --parallel 3
 
-FROM ${ARCH}/alpine as mr-do-snapclient
+FROM alpine as mr-do-snapclient
 LABEL maintainer="riemerk"
-
-COPY dummy qemu-*-static /usr/bin/
 
 RUN apk add --no-cache \
     alsa-lib \
