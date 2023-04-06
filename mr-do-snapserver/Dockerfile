@@ -1,7 +1,6 @@
-ARG ALPINE_BASE="3.17"
 ARG ARCH=arm64
 
-FROM alpine:${ALPINE_BASE} AS librespot
+FROM alpine AS librespot
 # source: https://github.com/librespot-org/librespot
 
 WORKDIR /librespot
@@ -21,7 +20,7 @@ RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
 
 # ****** ****** ****** ****** ****** ****** ****** ****** 
 
-FROM alpine:${ALPINE_BASE} as snapserver
+FROM alpine as snapserver
 # main credits: https://github.com/badaix/snapcast
 ARG SNAPCAST_VERSION=master
 
@@ -58,7 +57,7 @@ RUN apk -U add build-base git \
     && make -C snapweb
 
 # Final stage
-FROM alpine:${ALPINE_BASE} AS mr-do-snapserver
+FROM alpine:3 AS mr-do-snapserver
 LABEL maintainer="riemerk"
 
 RUN apk add --no-cache \
