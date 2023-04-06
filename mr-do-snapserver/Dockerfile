@@ -46,7 +46,7 @@ RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION https://github.co
     -DBUILD_CLIENT=OFF \
     &&  cmake --build build --parallel 3
 
-FROM node:alpine as snapweb
+FROM alpine as snapweb
 
 RUN apk -U add build-base git \
     && npm install -g typescript \
