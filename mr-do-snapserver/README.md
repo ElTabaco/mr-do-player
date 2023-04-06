@@ -50,5 +50,6 @@ All reused code from main creators is linked direkt in Doker file.
 [Snapcast](https://github.com/badaix/snapcast) from badaix
 
 ### Credits
-[Docker snapclient] https://github.com/Saiyato/snapclient_docker
-[Docker Snapcast] https://github.com/Saiyato/snapserver_docker
+[DockerSnapclient] (https://github.com/Saiyato/snapclient_docker)
+[DockerSnapcast] (https://github.com/Saiyato/snapserver_docker)
+[librespot] (https://github.com/librespot-org/librespot)

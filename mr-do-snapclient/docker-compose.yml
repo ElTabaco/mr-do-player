@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+    mr-do-snapclient:
+        image: riemerk/mr-do-snapclient:latest
+        container_name: mr-do-snapclient
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - DEVICE_NAME=Snapclient
+            - TZ=Europe/Berlin
+        network_mode: host
+        devices:
+            - /dev/snd
+        hostname: 192.168.1.10
+        restart: unless-stopped

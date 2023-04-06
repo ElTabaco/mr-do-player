@@ -1,7 +1,6 @@
 ARG ARCH=arm64
 
 FROM alpine AS librespot
-# source: https://github.com/librespot-org/librespot
 
 WORKDIR /librespot
 
@@ -21,7 +20,6 @@ RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
 # ****** ****** ****** ****** ****** ****** ****** ****** 
 
 FROM alpine as snapserver
-# main credits: https://github.com/badaix/snapcast
 ARG SNAPCAST_VERSION=master
 
 RUN apk -U add \
@@ -38,7 +36,6 @@ RUN apk -U add \
     libvorbis-dev \
     opus-dev \
     soxr-dev
-
 
 RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION https://github.com/badaix/snapcast.git \
     && cd snapcast \
@@ -57,7 +54,7 @@ RUN apk -U add build-base git \
     && make -C snapweb
 
 # Final stage
-FROM alpine:3 AS mr-do-snapserver
+FROM alpine as mr-do-snapserver
 LABEL maintainer="riemerk"
 
 RUN apk add --no-cache \
