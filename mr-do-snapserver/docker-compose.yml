@@ -3,16 +3,18 @@ services:
     mr-do-snapserver:
         image: riemerk/mr-do-snapserver:latest
         container_name: mr-do-snapserver
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - DEVICE_NAME=Snapserver
+            - TZ=Europe/Berlin
         volumes:
-            - './etc/snapserver.conf:/etc/snapserver.conf'
-            - './config/snapserver/:/root/.config/snapserver/'
-        #            - './tmp/music/:/tmp/music'
+            - ./etc/snapserver.conf:/etc/snapserver.conf
+            - ./config/snapserver/:/root/.config/snapserver/
+            - ./tmp/music/:/tmp/music
         network_mode: host
         #        ports:
         #            - 1704:1704
         #            - 1705:1705
         #            - 1780:1780
-        environment:
-            - DEVICE_NAME=Snapserver
-            - TZ=Europe/Berlin
         restart: unless-stopped

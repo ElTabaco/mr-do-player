@@ -19,10 +19,7 @@ RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
 #    cd librespot && \
 #    cargo build --release --no-default-features
 
-
 # ****** ****** ****** ****** ****** ****** ****** ****** 
-# source: https://github.com/Saiyato/snapclient_docker
-# source: https://github.com/Saiyato/snapserver_docker
 
 FROM alpine:${ALPINE_BASE} as snapserver
 # main credits: https://github.com/badaix/snapcast

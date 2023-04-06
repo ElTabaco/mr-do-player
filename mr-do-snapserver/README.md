@@ -5,7 +5,7 @@
 
 Run a [Snapcast](https://github.com/badaix/snapcast) server with [Spotify support](https://github.com/librespot-org/librespot) as a Docker container.
 
-Free for everyone to bring your modifikations with a branch to all who like to use and improve.
+Free to everyone bring your changes with a branch to all like to improve.
 
 _Note: You need a Spotify premium account._
 
@@ -46,5 +46,9 @@ docker-compose up -d
 
 All reused code from main creators is linked direkt in Doker file.
 
-Main credits: 
+## Main credits: 
 [Snapcast](https://github.com/badaix/snapcast) from badaix
+
+### Credits
+[Docker snapclient] https://github.com/Saiyato/snapclient_docker
+[Docker Snapcast] https://github.com/Saiyato/snapserver_docker
