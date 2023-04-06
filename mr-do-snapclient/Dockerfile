@@ -43,6 +43,6 @@ RUN apk add --no-cache \
 
 COPY --from=snapclient /root/snapcast/bin/snapclient /usr/local/bin
 
-ENV DEVICE_NAME=mr-do-snapserver
+ENV DEVICE_NAME=mr-do-snaclient
 
 ENTRYPOINT ["snapclient"]
