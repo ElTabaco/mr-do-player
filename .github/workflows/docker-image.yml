@@ -14,5 +14,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+    - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./'mr-do-snapclient/Dockerfile'
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: riemerk/mr-do-snapclient
+
     - name: Build the Docker image
-      run: docker build . --file 'mr-do-snapclient/Dockerfile' --tag riemerk/mr-do-snapclient --platform 'linux/amd64,linux/arm64'
+      run: docker buildx . --file 'mr-do-snapclient/Dockerfile' --tag riemerk/mr-do-snapclient --platform 'linux/amd64,linux/arm64'
+    - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
