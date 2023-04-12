@@ -31,5 +31,6 @@ jobs:
         with:
           context: .
           file: 'mr-do-snapclient/Dockerfile'
+          platforms: linux/amd64,linux/arm64,linux/arm
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:latest
