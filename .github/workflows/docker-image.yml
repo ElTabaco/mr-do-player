@@ -32,4 +32,4 @@ jobs:
           context: .
           file: 'mr-do-snapclient/Dockerfile'
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mr-do-snapclient:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:latest
