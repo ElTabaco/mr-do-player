@@ -17,4 +17,5 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@master
     - name: Build the Docker image
+      file: ./Dockerfile
       run: docker buildx . --file 'mr-do-snapclient/Dockerfile' --tag riemerk/mr-do-snapclient --platform 'amd64,arm64'
