@@ -5,5 +5,5 @@ SNAPCAST_VERSION=master
 ARCH=arm64
 echo ${SNAPCAST_VERSION}
 
-docker build -t riemerk/mr-do-snapclient --build-arg ARCH=${ARCH} .
+docker buildx -t riemerk/mr-do-snapclient --platform linux/amd64,linux/arm64 --build-arg ARCH=${ARCH} .
 docker tag riemerk/mr-do-snapclient:latest riemer/mr-do-snapclient:${SNAPCAST_VERSION}-${ARCH}

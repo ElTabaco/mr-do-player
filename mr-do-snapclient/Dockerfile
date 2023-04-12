@@ -1,5 +1,3 @@
-ARG ARCH=arm64
-
 FROM alpine as snapclient
 ARG SNAPCAST_VERSION=master
 WORKDIR /root

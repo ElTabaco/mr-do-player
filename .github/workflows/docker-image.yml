@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file 'mr-do-snapserver/Dockerfile' --tag riemerk/mr-do-snapclient
+      run: docker build . --file 'mr-do-snapclient/Dockerfile' --tag riemerk/mr-do-snapclient --platform linux/amd64,linux/arm64
