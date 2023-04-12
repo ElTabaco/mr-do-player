@@ -1,5 +1,3 @@
-ARG ARCH=arm64
-
 FROM alpine AS librespot
 
 WORKDIR /librespot
@@ -47,10 +45,11 @@ RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION https://github.co
     &&  cmake --build build --parallel 3
 
 FROM alpine as snapweb
+ARG SNAPCAST_VERSION=master
 
 RUN apk -U add build-base git \
-    && npm install -g typescript \
-    && git clone https://github.com/badaix/snapweb \
+    && npm install -g typescript
+RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION  https://github.com/badaix/snapweb.git \
     && make -C snapweb
 
 # Final stage
