@@ -50,27 +50,30 @@ ARG SNAPCAST_VERSION=master
 RUN apk -U add \
     build-base \
     git \
-    && npm install -g typescript
-
-RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION  https://github.com/badaix/snapweb.git \
+    && npm install -g typescript \
+    && git clone --recursive --depth 1 --branch $SNAPCAST_VERSION  https://github.com/badaix/snapweb.git \
     && make -C snapweb
 
 # Final stage
 FROM alpine as mr-do-snapserver
 LABEL maintainer="riemerk"
 
-RUN apk add --no-cache \
-    alsa-lib \
-    avahi-libs \
-    expat \
-    flac \
-    libvorbis \
-    opus \
-    soxr \
-    && rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
+RUN apk add --no-cache bash snapcast 
+
+#RUN apk add --no-cache \
+#    alsa-lib \
+#    avahi-libs \
+#    expat \
+#    flac \
+#    libvorbis \
+#    opus \
+#    soxr \
+#    && rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
 
 COPY --from=snapserver snapcast/bin/snapserver /usr/local/bin/
-COPY --from=snapweb snapweb/dist/ /usr/share/snapserver/snapweb
+COPY --from=snapweb /usr/share/snapserver/snapweb /usr/share/snapserver/snapweb
+#COPY --from=snapweb snapweb/dist/ /usr/share/snapserver/snapweb
 COPY --from=librespot /root/.cargo/bin/librespot /usr/local/bin/
 
 ENV DEVICE_NAME=mr-do-snapserver
