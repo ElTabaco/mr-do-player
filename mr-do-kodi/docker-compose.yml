@@ -20,6 +20,8 @@ services:
             - 9090:9090
             - 9777:9777/udp
         restart: unless-stopped
+        depends_on:
+            - mr-do-snapserver
     mr-do-snapserver:
         image: riemerk/mr-do-snapserver:latest
         container_name: mr-do-snapserver

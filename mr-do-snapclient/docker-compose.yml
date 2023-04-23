@@ -10,6 +10,8 @@ services:
             - DEVICE_NAME=Snapclient
             - TZ=Europe/Berlin
         devices:
-            - /dev/snd
+            - /dev/sn
         hostname: myClientName
         restart: unless-stopped
+#        depends_on:
+#            - mr-do-snapserver
