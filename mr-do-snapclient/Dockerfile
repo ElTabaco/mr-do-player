@@ -37,6 +37,9 @@ RUN apk add --no-cache \
     libvorbis \
     opus \
     soxr \
+    && apk del \
+    netstat\
+    wget\
     && rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
 
 COPY --from=snapclient /root/snapcast/bin/snapclient /usr/local/bin
