@@ -11,7 +11,7 @@ services:
         volumes:
             - ./etc/snapserver.conf:/etc/snapserver.conf
             - ./config/snapserver/:/root/.config/snapserver/
-            - ./tmp/music/:/tmp/music
+        #    - ./tmp/music/:/tmp/music
         network_mode: host
         #        ports:
         #            - 1704:1704
