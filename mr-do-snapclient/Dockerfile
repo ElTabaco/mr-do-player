@@ -39,8 +39,8 @@ RUN apk add --no-cache \
     soxr \
     && apk del \
     netstat\
-    wget\
-    && rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
+    wget
+RUN rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
 
 COPY --from=snapclient /root/snapcast/bin/snapclient /usr/local/bin
 
