@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+    mr-do-snapclient:
+        image: riemerk/mr-do-upnp:latest
+        container_name: mr-do-upnp
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - DEVICE_NAME=mrUPnP
+            - TZ=Europe/Berlin
+        ports:
+        - "8200:8200"     # Port for MiniDLNA server
+        - "12345:12345"   # Port for TCP audio stream
+        volumes:
+        - ./media:/media/dlna
+        networks:
+        - dlna-network
+        hostname: myUPnP
+        restart: unless-stopped
+
+networks:
+  dlna-network:
+    driver: bridge

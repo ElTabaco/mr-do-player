@@ -1,4 +1,3 @@
-version: '3.3'
 services:
     kodi-headless:
         image: fhriley/kodi-headless-novnc:Nexus

@@ -1,8 +1,8 @@
-name: Docker Image CI
+name: Docker Image CI upnp
 
 on:
-#  push:
-#    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -33,16 +33,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: 'mr-do-snapclient/Dockerfile'
+          file: 'mr-do-upnp/Dockerfile'
           platforms: linux/amd64,linux/arm64,linux/arm
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:latest
-      -
-        name: Build and push mr-do-snapserver
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: 'mr-do-snapserver/Dockerfile'
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/mr-do-snapserver:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/mr-do-upnp:latest
