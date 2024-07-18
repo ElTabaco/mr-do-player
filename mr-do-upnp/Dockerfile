@@ -17,7 +17,7 @@ RUN mkdir -p /media/dlna
 EXPOSE 8200 12345
 
 # Add entrypoint script
-COPY entrypoint.sh /entrypoint.sh
+COPY mr-do-upnp/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENV DEVICE_NAME=mr-do-upnp
