@@ -38,8 +38,7 @@ RUN apk add --no-cache \
     opus \
     soxr
 RUN apk del \
-    netstat\
-    wget
+    netstat
 RUN rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
 
 COPY --from=snapclient /root/snapcast/bin/snapclient /usr/local/bin
