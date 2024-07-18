@@ -36,8 +36,8 @@ RUN apk add --no-cache \
     flac \
     libvorbis \
     opus \
-    soxr \
-    && apk del \
+    soxr
+RUN apk del \
     netstat\
     wget
 RUN rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
