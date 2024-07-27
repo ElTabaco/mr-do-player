@@ -1,5 +1,5 @@
 FROM alpine as snapclient
-ARG SNAPCAST_VERSION=master
+ARG SNAPCAST_VERSION=develop
 WORKDIR /root
 
 RUN apk -U add \
