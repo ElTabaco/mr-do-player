@@ -18,7 +18,7 @@ RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
 # ****** ****** ****** ****** ****** ****** ****** ****** 
 
 FROM alpine as snapserver
-ARG SNAPCAST_VERSION=master
+ARG SNAPCAST_VERSION=develop
 
 RUN apk -U add \
     alsa-lib-dev \
