@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: mr-do-player
+  # http://mr-do-player-service.mr-do-player.svc.cluster.local:8000
+  # http://webinterface.tcp.mr-do-player-service.default.svc.cluster.local
+  name: mr-do-player
+  labels:
+    app: mr-do-player
+spec:
+  selector:
+    matchLabels:
+      app: mr-do-player
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mr-do-player
+    spec:
+      hostNetwork: true
+      containers:
+        - name: mr-do-kodi
+          image: fhriley/kodi-headless-novnc:Nexus
+          ports:
+            - containerPort: 5900
+            - containerPort: 8000
+            - containerPort: 8080
+            - containerPort: 9090
+            - containerPort: 9777
+            - containerPort: 1800
+            - containerPort: 1411
+            - containerPort: 1900
+          env:
+            - name: TZ
+              value: Europe/Berlin
+          volumeMounts:
+            - name: mr-do-asound-cfgm
+              mountPath: /etc/asound.conf
+              subPath: asound.conf
+              readOnly: true
+            - name: mr-do-snapserver-data
+              mountPath: /tmp/music
+            - name: mr-do-player-data
+              mountPath: /data/.kodi
+              subPath: kodi/data
+        - name: mr-do-snapserver
+          image: riemerk/mr-do-snapserver:latest
+          ports:
+            # snapclien
+            - containerPort: 1780
+            - containerPort: 1704
+            - containerPort: 1705
+            # libre
+            - containerPort: 42661
+            - containerPort: 4070
+            - containerPort: 5353
+          env:
+            - name: TZ
+              value: Europe/Berlin
+          volumeMounts:
+            - name: mr-do-player-data
+              mountPath: /root/.config/snapserver
+              subPath: snapserver
+            - name: mr-do-snapserver-cfgm
+              mountPath: /etc/snapserver.conf
+              subPath: snapserver.conf
+              readOnly: true
+            - name: mr-do-snapserver-data
+              mountPath: /tmp/music
+      volumes:
+        - name: mr-do-snapserver-data
+          emptyDir: {}
+        - name: mr-do-player-data
+          persistentVolumeClaim:
+            claimName: mr-do-player-pvc-data
+        - name: mr-do-asound-cfgm
+          configMap:
+            name: mr-do-asound-cfgmap
+        - name: mr-do-snapserver-cfgm
+          configMap:
+            name: mr-do-snapserver-cfgmap

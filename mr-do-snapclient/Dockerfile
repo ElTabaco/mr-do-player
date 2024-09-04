@@ -40,7 +40,12 @@ RUN apk add --no-cache \
 #RUN apk del \
 #    netstat\
 #    wget
-RUN rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
+RUN rm -rf \
+    /etc/ssl \
+    /var/cache/apk/* \
+    /lib/apk/db/* \
+    /root/snapcast \
+    /usr/bin/dummy
 
 COPY --from=snapclient /root/snapcast/bin/snapclient /usr/local/bin
 

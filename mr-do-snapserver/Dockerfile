@@ -68,8 +68,14 @@ RUN apk add --no-cache \
     flac \
     libvorbis \
     opus \
-    soxr \
-    && rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
+    soxr 
+
+RUN rm -rf \
+    /etc/ssl \
+    /var/cache/apk/* \
+    /lib/apk/db/* \
+    /root/snapcast \
+    /usr/bin/dummy
 
 COPY --from=snapserver snapcast/bin/snapserver /usr/local/bin/
 COPY --from=snapweb /usr/share/snapserver/snapweb /usr/share/snapserver/snapweb

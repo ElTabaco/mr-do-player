@@ -4,8 +4,13 @@ FROM alpine:latest as upnp
 RUN apk add --no-cache \
     minidlna \
     ffmpeg \
-    socat \
-    && rm -rf /etc/ssl /var/cache/apk/* /lib/apk/db/* /root/snapcast /usr/bin/dummy
+    socat
+
+# Cleanup
+RUN rm -rf \
+    /etc/ssl \
+    /var/cache/apk/* \
+    /lib/apk/db/* 
 
 # Configure MiniDLNA
 COPY mr-do-upnp/minidlna.conf /etc/minidlna.conf

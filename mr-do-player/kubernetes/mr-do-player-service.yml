@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: mr-do-player
+  name: mr-do-player-service
+#  annotations:
+#    metallb.universe.tf/loadBalancerIPs: 192.168.0.200
+spec:
+  selector:
+    app: mr-do-player
+  type: LoadBalancer
+  loadBalancerIP: 192.168.0.246
+  ports:
+    - port: 5900
+      targetPort: 5900
+      protocol: TCP
+      name: kodi2
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: kodi3
+    - port: 8080
+      targetPort: 8080
+      name: kodiweb
+    - port: 9090
+      targetPort: 9090
+      name: kodi4
+    - port: 9777
+      targetPort: 9777
+      protocol: UDP
+      name: upnp-esport
+    - port: 1800
+      targetPort: 1800
+      name: upnp-port-renderer
+    - port: 1411
+      targetPort: 1411
+      name: upnp-renderer
+    - port: 1900
+      targetPort: 1900
+      protocol: UDP
+      name: upnp-simple-service-discovry-protocol
+    # snapclien
+    - port: 1780
+      targetPort: 1780
+      protocol: TCP
+      name: webinterface
+    - port: 1704
+      targetPort: 1704
+      protocol: TCP
+      name: snapcast-control
+    - port: 1705
+      targetPort: 1705
+      protocol: TCP
+      name: snapcast-stream
+    # libre
+    - port: 42661
+      targetPort: 42661
+      name: libre
+    - port: 4070
+      targetPort: 4070
+      protocol: TCP
+      name: libreapp
+    - port: 5353
+      targetPort: 5353
+      protocol: UDP
+      name: libred

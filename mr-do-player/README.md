@@ -3,16 +3,15 @@
 Plays audi stream to fifo file. Can used direkt with [Snapcast](https://github.com/badaix/snapcast).
 
 ## TODO:
-* privileges shall be removed
-* Dependency to soundcard shall removed and something like gateway shall be used
-* Direkt stream to [Snapcast](https://github.com/badaix/snapcast) shall be used
+
+* Dependency to soundcard shall removed and something like tcp stream shall be used
+* Direkt tcp stream from [Snapcast](https://github.com/badaix/snapcast) shall be used
 
 _I have neit the experiance to solve that. If anyone is familiar here, please create a branch_
 
 ## Run:
 
 See docker compose file
-
    
 ### Credits:
 
