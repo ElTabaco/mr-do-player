@@ -1,7 +1,7 @@
 FROM alpine:latest as upnp
 
 # Install necessary packages
-RUN apk add --no-cache \
+RUN apk -U add --no-cache \
     minidlna \
     ffmpeg \
     socat
