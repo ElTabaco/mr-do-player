@@ -1,4 +1,3 @@
-version: '3.8'
 services:
     mr-do-snapclient:
         image: riemerk/mr-do-upnp:latest

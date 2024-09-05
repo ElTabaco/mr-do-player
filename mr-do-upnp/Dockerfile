@@ -23,7 +23,7 @@ EXPOSE 8200 12345
 
 # Add entrypoint script
 #COPY mr-do-upnp/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+#RUN chmod +x /entrypoint.sh
 
 ENV DEVICE_NAME=mr-do-upnp
 # Run the entrypoint script
