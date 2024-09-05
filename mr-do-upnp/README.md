@@ -10,6 +10,12 @@ nc <docker-host-ip> 12345 | ffplay -f mp3 -
 ```
 Or using VLC media player, open a network stream and input tcp://<docker-host-ip>:12345.
 
+enter container
+
+```console
+docker run --rm -it -p 8200:8200 -p 12345:12345 --entrypoint sh riemerk/mr-do-upnp:latest
+```
+
 ## UPnP / dlna
 
 ### ARM64
