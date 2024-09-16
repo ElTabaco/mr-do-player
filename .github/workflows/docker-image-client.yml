@@ -9,14 +9,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm/v6
-          - linux/arm/v7
-          - linux/arm64
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        platform:
+#          - linux/amd64
+#          - linux/arm/v6
+#          - linux/arm/v7
+#          - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -34,6 +34,6 @@ jobs:
         with:
           context: .
           file: 'mr-do-snapclient/Dockerfile'
- #         platforms: linux/amd64,linux/arm64,linux/arm
+          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
           push: true
           tags: riemerk/mr-do-snapclient:latest
