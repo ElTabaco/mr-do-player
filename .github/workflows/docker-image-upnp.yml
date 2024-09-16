@@ -34,7 +34,7 @@ jobs:
         with:
           context: .
           file: 'mr-do-upnp/Dockerfile'
-          platforms: linux/amd64,linux/arm64,linux/arm
+          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
           push: true
           tags: riemerk/mr-do-upnp:latest
       - name: Run the Docker container
