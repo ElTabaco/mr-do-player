@@ -1,8 +1,8 @@
-FROM alpine:latest
+FROM ubuntu:latest
 
 # Install necessary packages
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     gmediarender
 
 
