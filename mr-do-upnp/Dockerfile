@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu
 
 # Install necessary packages
 RUN apt-get update && \
