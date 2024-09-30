@@ -11,10 +11,6 @@
 
 [![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-snapserver/latest?arch=arm64)](https://hub.docker.com/r/riemerk/mr-do-snapserver)
 
-### ARM32
-
-[![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-snapserver/latest?arch=arm)](https://hub.docker.com/r/riemerk/mr-do-snapserver)
-
 ### AMD64
 
 [![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-snapserver/latest?arch=amd64)](https://hub.docker.com/r/riemerk/mr-do-snapserver)

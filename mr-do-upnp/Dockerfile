@@ -1,30 +1,18 @@
-FROM alpine:latest as upnp
+FROM alpine:latest
 
 # Install necessary packages
-RUN apk -U add --no-cache \
-    minidlna \
-    ffmpeg \
-    socat
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    gmediarender && \
+    --no-install-recommends
 
 # Cleanup
-RUN rm -rf \
-    /etc/ssl \
-    /var/cache/apk/* \
-    /lib/apk/db/* 
-
-# Configure MiniDLNA
-COPY mr-do-upnp/minidlna.conf /etc/minidlna.conf
-
-# Create a directory for media files
-RUN mkdir -p /media/dlna
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists
 
 # Expose the necessary ports
 EXPOSE 8200 12345
 
-# Add entrypoint script
-#COPY mr-do-upnp/entrypoint.sh /entrypoint.sh
-#RUN chmod +x /entrypoint.sh
-
 ENV DEVICE_NAME=mr-do-upnp
 # Run the entrypoint script
-ENTRYPOINT ["minidlnad -S"]
+ENTRYPOINT ["gmediarender", "-f", "AlpineUPnPRenderer", "--gstout-audio-sink=alsasink"]

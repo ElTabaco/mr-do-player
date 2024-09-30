@@ -1,6 +1,7 @@
 # Accessing the DLNA Server and TCP Stream
 
-    Access the DLNA server using a DLNA client on your network at http://<docker-host-ip>:8200.
+    Access the DLNA server using a DLNA client on your network at 
+    http://<docker-host-ip>:8200
     Listen to the audio stream by connecting to the TCP stream on port 12345. Use tools like nc (Netcat) or a media player that supports streaming from TCP.
 
 For example, using nc to play the stream:
@@ -14,6 +15,13 @@ enter container
 
 ```console
 docker run --rm -it -p 8200:8200 -p 12345:12345 --entrypoint sh riemerk/mr-do-upnp:latest
+```
+
+## Test local and on an other machine
+
+```console
+curl http://localhost:8200 | grep "MiniDLNA status"
+nc -zv localhost 12345
 ```
 
 ## UPnP / dlna
