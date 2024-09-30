@@ -19,7 +19,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists
 
 # Expose the necessary ports
-EXPOSE 49494
+EXPOSE 49494 1900/udp
 
 ENV DEVICE_NAME=mr-do-upnp
 # Run the entrypoint script
