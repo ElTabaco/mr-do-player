@@ -1,13 +1,13 @@
 FROM alpine:latest
 
 # Install necessary packages
-RUN apt update && \
+RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
     gmediarender && \
     --no-install-recommends
 
 # Cleanup
-RUN apt clean && \
+RUN apt-get clean && \
     rm -rf /var/lib/apt/lists
 
 # Expose the necessary ports
