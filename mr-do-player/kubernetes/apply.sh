@@ -15,8 +15,8 @@ sudo kubectl get pods --all-namespaces -o wide
 
 
 
-sudo kubectl get ingress --all-namespaces -o wide
-sudo kubectl describe ingress -n mr-do-player
+#sudo kubectl get ingress --all-namespaces -o wide
+#sudo kubectl describe ingress -n mr-do-player
 
 sudo kubectl get pv --all-namespaces -o wide
 sudo kubectl get pvc --all-namespaces -o wide

@@ -1,26 +1,21 @@
 services:
-    kodi-headless:
-        image: fhriley/kodi-headless-novnc:Nexus
-        container_name: kodi-headless
+    mr-do-upnp:
+        image: riemerk/mr-do-upnp:latest
+        container_name: mr-do-upnp
         environment:
             - PUID=1000
             - PGID=1000
-            - DEVICE_NAME=Kodi
+            - DEVICE_NAME=mrUPnP
             - TZ=Europe/Berlin
+#        ports:
+#        - "49494:49494" 
+#        - "3000:3000" 
+        network_mode: host
         volumes:
-            - ./tmp/music/:/tmp/music/
-            - ./etc/asound.conf:/etc/asound.conf
-            - ./kodi_data:/data
-        ports:
-            - 1900:1900
-            - 5900:5900/tcp
-            - 8000:8000/tcp
-            - 8083:8080
-            - 9090:9090
-            - 9777:9777/udp
+        - ./etc/asound.conf:/etc/asound.conf
+        - ./tmp/music/:/tmp/music
+        hostname: myUPnP
         restart: unless-stopped
-        depends_on:
-            - mr-do-snapserver
     mr-do-snapserver:
         image: riemerk/mr-do-snapserver:latest
         container_name: mr-do-snapserver

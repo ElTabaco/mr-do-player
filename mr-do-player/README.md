@@ -15,9 +15,4 @@ See docker compose file
    
 ### Credits:
 
-All code reuse is liked direkt to the main creator in Doker file.
-
-Sources: 
-- [linuxserver docker-kodi-headless](https://github.com/linuxserver/docker-kodi-headless)
-- [matthuisman docker-kodi-headless](https://github.com/matthuisman/docker-kodi-headless)
-- [fhriley kodi-headless-novnc](https://github.com/fhriley/kodi-headless-novnc)
+[Snapcast](https://github.com/badaix/snapcast) from badaix

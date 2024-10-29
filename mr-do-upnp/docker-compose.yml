@@ -1,5 +1,5 @@
 services:
-    mr-do-snapclient:
+    mr-do-upnp:
         image: riemerk/mr-do-upnp:latest
         container_name: mr-do-upnp
         environment:
@@ -8,15 +8,34 @@ services:
             - DEVICE_NAME=mrUPnP
             - TZ=Europe/Berlin
         ports:
-        - "8200:8200"     # Port for MiniDLNA server
-        - "12345:12345"   # Port for TCP audio stream
+        - 49494:49494 
+        - 1900:1900
+ #       - 43345:43345
+ #       - 33503:33503
+        network_mode: host
         volumes:
-        - ./media:/media/dlna
-        networks:
-        - dlna-network
+#        - ./media:/media/dlna
+        - ./etc/asound.conf:/etc/asound.conf
+        - ./tmp/music/:/tmp/music
+#        networks:
+#        - dlna-network
         hostname: myUPnP
         restart: unless-stopped
-
-networks:
-  dlna-network:
-    driver: bridge
+    mr-do-snapserver:
+        image: riemerk/mr-do-snapserver:latest
+        container_name: mr-do-snapserver
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - DEVICE_NAME=Snapserver
+            - TZ=Europe/Berlin
+        volumes:
+            - ./etc/snapserver.conf:/etc/snapserver.conf
+            - ./config/snapserver/:/root/.config/snapserver/
+            - ./tmp/music/:/tmp/music
+        network_mode: host
+        #        ports:
+        #            - 1704:1704
+        #            - 1705:1705
+        #            - 1780:1780
+        restart: unless-stopped

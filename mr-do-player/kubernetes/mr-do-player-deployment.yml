@@ -19,17 +19,13 @@ spec:
     spec:
       hostNetwork: true
       containers:
-        - name: mr-do-kodi
-          image: fhriley/kodi-headless-novnc:Nexus
+        - name: mr-do-upnp
+          image: riemerk/mr-do-upnp:latest
           ports:
-            - containerPort: 5900
-            - containerPort: 8000
-            - containerPort: 8080
-            - containerPort: 9090
-            - containerPort: 9777
-            - containerPort: 1800
-            - containerPort: 1411
+            - containerPort: 49494
             - containerPort: 1900
+#            - containerPort: 43345
+#            - containerPort: 33503
           env:
             - name: TZ
               value: Europe/Berlin
@@ -40,9 +36,6 @@ spec:
               readOnly: true
             - name: mr-do-snapserver-data
               mountPath: /tmp/music
-            - name: mr-do-player-data
-              mountPath: /data/.kodi
-              subPath: kodi/data
         - name: mr-do-snapserver
           image: riemerk/mr-do-snapserver:latest
           ports:

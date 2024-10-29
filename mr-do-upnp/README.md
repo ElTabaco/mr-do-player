@@ -15,6 +15,8 @@ enter container
 
 ```console
 docker run --rm -it -p 8200:8200 -p 12345:12345 --entrypoint sh riemerk/mr-do-upnp:latest
+
+docker run (or equivalent) can you try adding the --device /dev/snd --device /dev/bus/usb flags? 
 ```
 
 ## Test local and on an other machine

@@ -9,7 +9,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 2Gi
+      storage: 1Gi
   selector:
     matchLabels:
       usage: mr-do-player-pv-data

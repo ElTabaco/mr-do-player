@@ -7,7 +7,7 @@ metadata:
     usage: mr-do-player-pv-data
 spec:
   capacity:
-    storage: 2Gi
+    storage: 1Gi
   storageClassName: nfs
   accessModes:
   - ReadWriteMany
@@ -18,5 +18,5 @@ spec:
 #   - nfsvers=4.1
   nfs:
     server: mr0.local
-    path: "/srv/nfs4/homes/media/mr"
+    path: "/srv/nfs4/homes/mr/media"
     readOnly: false

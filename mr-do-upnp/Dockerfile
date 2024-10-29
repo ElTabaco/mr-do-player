@@ -4,8 +4,6 @@ FROM ubuntu
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     gmediarender \
- #   alsa-utils \
- #   avahi-daemon \
  #   gstreamer1.0-tools \
     gstreamer1.0-alsa \
     gstreamer1.0-plugins-base \
@@ -19,7 +17,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists
 
 # Expose the necessary ports
-EXPOSE 49494 1900/udp
+EXPOSE 49494/tcp 1900/udp
 
 ENV DEVICE_NAME=mr-do-upnp
 # Run the entrypoint script

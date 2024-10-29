@@ -9,31 +9,19 @@ spec:
   selector:
     app: mr-do-player
   type: LoadBalancer
-  loadBalancerIP: 192.168.0.246
+  loadBalancerIP: 192.168.0.6
   ports:
-    - port: 5900
-      targetPort: 5900
+#    - port: 43345
+#      targetPort: 43345
+#      protocol: UDP
+#      name: upnp1
+#    - port: 33503
+#      targetPort: 33503
+#      protocol: UDP
+#      name: upnp2
+    - port: 49494
+      targetPort: 49494
       protocol: TCP
-      name: kodi2
-    - port: 8000
-      targetPort: 8000
-      protocol: TCP
-      name: kodi3
-    - port: 8080
-      targetPort: 8080
-      name: kodiweb
-    - port: 9090
-      targetPort: 9090
-      name: kodi4
-    - port: 9777
-      targetPort: 9777
-      protocol: UDP
-      name: upnp-esport
-    - port: 1800
-      targetPort: 1800
-      name: upnp-port-renderer
-    - port: 1411
-      targetPort: 1411
       name: upnp-renderer
     - port: 1900
       targetPort: 1900
