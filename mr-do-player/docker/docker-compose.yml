@@ -7,9 +7,9 @@ services:
             - PGID=1000
             - DEVICE_NAME=mrUPnP
             - TZ=Europe/Berlin
-#        ports:
-#        - "49494:49494" 
-#        - "3000:3000" 
+        ports:
+        - 49494:49494 
+        - 1900:1900
         network_mode: host
         volumes:
         - ./etc/asound.conf:/etc/asound.conf
@@ -28,9 +28,9 @@ services:
             - ./etc/snapserver.conf:/etc/snapserver.conf
             - ./config/snapserver/:/root/.config/snapserver/
             - ./tmp/music/:/tmp/music
+        ports:
+            - 1704:1704
+            - 1705:1705
+            - 1780:1780
         network_mode: host
-        #        ports:
-        #            - 1704:1704
-        #            - 1705:1705
-        #            - 1780:1780
         restart: unless-stopped

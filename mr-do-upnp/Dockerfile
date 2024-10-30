@@ -1,4 +1,7 @@
 FROM ubuntu
+ENV UPNP_NAME="mr do Media Renderer"
+ENV UPNP_PORT=49494
+ENV DEVICE_NAME=mr-do-upnp
 
 # Install necessary packages
 RUN apt-get update && \
@@ -19,11 +22,5 @@ RUN apt-get update && \
 # Expose the necessary ports
 EXPOSE 49494/tcp 1900/udp
 
-ENV DEVICE_NAME=mr-do-upnp
 # Run the entrypoint script
-#ENTRYPOINT ["gmediarender", "--port=49494", "-f", "AlpineUPnPRenderer", "--gstout-audiosink=alsasink"]
-
-ENTRYPOINT exec gmediarender --friendly-name "mr Media Renderer" --port=49494 --gstout-audiosink=alsasink
-
-#tcpclientsink host=host.docker.internal
-#gmediarender --friendly-name "Docker Media Renderer" --port=49494 --gstout-audiosink="tcpclientsink host=127.0.0.1 port=3000"
+ENTRYPOINT exec gmediarender --friendly-name "${UPNP_NAME}" --port=${UPNP_PORT} --gstout-audiosink=alsasink

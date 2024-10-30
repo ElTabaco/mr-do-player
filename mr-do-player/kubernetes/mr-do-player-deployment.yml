@@ -24,11 +24,11 @@ spec:
           ports:
             - containerPort: 49494
             - containerPort: 1900
-#            - containerPort: 43345
-#            - containerPort: 33503
           env:
             - name: TZ
               value: Europe/Berlin
+            - name: UPNP_NAME
+              value: mrCast
           volumeMounts:
             - name: mr-do-asound-cfgm
               mountPath: /etc/asound.conf
