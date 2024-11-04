@@ -30,6 +30,7 @@ RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION https://github.co
     -DBUILD_SERVER=OFF .. \
     && cmake --build build --parallel 3
 
+#--- mr-do-snapclient ------------------------
 FROM alpine as mr-do-snapclient
 LABEL maintainer="riemerk"
 
@@ -40,7 +41,8 @@ RUN apk add --no-cache \
     flac \
     libvorbis \
     opus \
-    soxr
+    soxr \
+    libstdc
 
 RUN if [ "$TARGETARCH" = "arm" ] || [ "$TARGETARCH" = "arm/v6" ] || [ "$TARGETARCH" = "arm/v7" ]  || [ "$TARGETPLATFORM" = "linux/arm/v6" ] || [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
     echo "Executing commands for $TARGETARCH architecture"; \
