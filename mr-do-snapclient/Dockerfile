@@ -40,14 +40,14 @@ RUN apk add --no-cache \
     soxr
 
 RUN if [ "$TARGETARCH" = "arm" ]; then \
-    echo "Executing additional commands for $TARGETARCH architecture"; \
+    echo "Executing commands for $TARGETARCH architecture"; \
     apk add --no-cache libstdc++ \
-#    apk add --no-cache lib32stdc++6 \
+    #    apk add --no-cache lib32stdc++6 \
     # docker exec -u root -it /bin/bash <container_id> ; \
-else \
-    echo "Executing commands for other architectures"; \
-fi
-    
+    else \
+    echo "Executing commands for other $TARGETARCH architecture"; \
+    fi
+
 RUN rm -rf \
     /etc/ssl \
     /var/cache/apk/* \
