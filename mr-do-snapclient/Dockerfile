@@ -1,7 +1,9 @@
-FROM alpine as snapclient
-ARG SNAPCAST_VERSION=develop
 ARG TARGETARCH
 ARG TARGETPLATFORM
+
+FROM alpine as snapclient
+ARG SNAPCAST_VERSION=develop
+
 WORKDIR /root
 
 RUN apk -U add \
