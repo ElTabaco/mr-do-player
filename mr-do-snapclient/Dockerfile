@@ -1,5 +1,6 @@
 FROM alpine as snapclient
 ARG SNAPCAST_VERSION=develop
+ARG TARGETARCH
 WORKDIR /root
 
 RUN apk -U add \
@@ -37,9 +38,16 @@ RUN apk add --no-cache \
     libvorbis \
     opus \
     soxr
-#RUN apk del \
-#    netstat\
-#    wget
+
+RUN if [ "$TARGETARCH" = "arm" ]; then \
+    echo "Executing additional commands for $TARGETARCH architecture"; \
+    apk add --no-cache libstdc++ \
+#    apk add --no-cache lib32stdc++6 \
+    # docker exec -u root -it /bin/bash <container_id> ; \
+else \
+    echo "Executing commands for other architectures"; \
+fi
+    
 RUN rm -rf \
     /etc/ssl \
     /var/cache/apk/* \
