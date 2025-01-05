@@ -21,5 +21,5 @@ metadata:
   creationTimestamp: "2025-01-05T22:14:25Z"
   name: mr-do-snapserver-cfgmap
   namespace: mr-do-player
-  resourceVersion: "19831027"
+  resourceVersion: "19833758"
   uid: 3ff39851-9c47-48af-ac9f-dc6026157e1e
