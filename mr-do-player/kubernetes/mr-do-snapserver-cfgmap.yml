@@ -1,0 +1,25 @@
+apiVersion: v1
+data:
+  snapserver.conf: |
+    [server]
+
+    [http]
+    doc_root = /usr/share/snapserver/snapweb
+
+    [tcp]
+
+    [stream]
+    stream = pipe:///tmp/music/upnpfifo?name=upnp&sampleformat=48000:16:2
+    source = librespot:///librespot?name=mrSpot&devicename=mrSpot&bitrate=320&sampleformat=48000:16:2&killall=false&params=--zeroconf-port%2042661
+    source = meta:///mrSpot/upnp?name=mrMusic
+    sampleformat = 48000:16:2
+    codec = flac
+
+    [logging]
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-01-05T22:14:25Z"
+  name: mr-do-snapserver-cfgmap
+  namespace: mr-do-player
+  resourceVersion: "19831027"
+  uid: 3ff39851-9c47-48af-ac9f-dc6026157e1e
