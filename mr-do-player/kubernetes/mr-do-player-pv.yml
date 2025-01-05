@@ -4,7 +4,7 @@ metadata:
   namespace: mr-do-player
   name: mr-do-player-pv-data
   labels:
-    app.kubernetes.io/instance: mr-do-player
+#    app.kubernetes.io/instance: mr-do-player
     usage: mr-do-player-pv-data
 spec:
   capacity:
