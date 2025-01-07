@@ -2,9 +2,9 @@ sudo kubectl create namespace mr-do-player
 sudo kubectl apply -f mr-do-player-pv.yml
 sudo kubectl apply -f mr-do-player-pvc.yml
 sudo kubectl create configmap mr-do-snapserver-cfgmap --from-file=etc/snapserver.conf -n mr-do-player
-# sudo kubectl get configmap mr-do-snapserver-cfgmap -o yaml
+# sudo kubectl get configmap mr-do-snapserver-cfgmap -o yaml  -n mr-do-player
 sudo kubectl create configmap mr-do-asound-cfgmap --from-file=etc/asound.conf -n mr-do-player
-# sudo kubectl get configmap mr-do-asound-cfgmap -o yaml
+# sudo kubectl get configmap mr-do-asound-cfgmap -o yaml  -n mr-do-player
 sudo kubectl apply -f mr-do-player-service.yml
 sudo kubectl apply -f mr-do-player-deployment.yml
 #sudo kubectl apply -f mr-do-player-ingress.yml
