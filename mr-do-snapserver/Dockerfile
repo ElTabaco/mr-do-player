@@ -3,7 +3,10 @@ FROM alpine AS librespot
 WORKDIR /librespot
 
 RUN apk -U add \
-    cargo portaudio-dev protobuf-dev
+    cargo \
+    portaudio-dev \
+    protobuf-dev \
+    cmake
 
 RUN cargo install librespot
 
