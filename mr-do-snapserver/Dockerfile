@@ -21,7 +21,7 @@ RUN apk -U add \
 # ****** ****** ****** ****** ****** ****** ****** ****** 
 
 FROM alpine as snapserver
-ARG SNAPCAST_VERSION=develop
+ARG SNAPCAST_VERSION=master
 
 RUN apk -U add \
     alsa-lib-dev \
