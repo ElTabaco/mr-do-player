@@ -36,4 +36,4 @@ jobs:
           file: 'mr-do-snapclient/Dockerfile'
           platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
           push: true
-          tags: riemerk/mr-do-snapclient:latest, riemerk/mr-do-snapclient:${{ env.DATE }}
+          tags: riemerk/mr-do-snapclient:latest
