@@ -8,9 +8,9 @@ RUN apk -U add \
     protobuf-dev \
     cmake
 
-RUN cargo install librespot
+#RUN cargo install librespot
 
-RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
+#RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
 
 #RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
@@ -73,6 +73,8 @@ RUN apk add --no-cache \
     opus \
     soxr 
 
+RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
+
 RUN rm -rf \
     /etc/ssl \
     /var/cache/apk/* \
@@ -83,7 +85,7 @@ RUN rm -rf \
 COPY --from=snapserver snapcast/bin/snapserver /usr/local/bin/
 COPY --from=snapweb /usr/share/snapserver/snapweb /usr/share/snapserver/snapweb
 #COPY --from=snapweb snapweb/dist/ /usr/share/snapserver/snapweb
-COPY --from=librespot /root/.cargo/bin/librespot /usr/local/bin/
+#COPY --from=librespot /root/.cargo/bin/librespot /usr/local/bin/
 
 ENV DEVICE_NAME=mr-do-snapserver
 EXPOSE 1704/tcp 1705/tcp 1780/tcp
