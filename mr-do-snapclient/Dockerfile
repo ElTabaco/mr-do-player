@@ -43,7 +43,8 @@ RUN apk add --no-cache \
     opus \
     soxr \
     libstdc++ \
-    libstdc++6 g++
+#    libstdc++6 \
+    g++
 
 RUN if [ "$TARGETARCH" = "arm" ] || [ "$TARGETARCH" = "arm/v6" ] || [ "$TARGETARCH" = "arm/v7" ]  || [ "$TARGETPLATFORM" = "linux/arm/v6" ] || [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
     echo "Executing commands for $TARGETARCH architecture"; \
