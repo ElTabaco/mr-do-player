@@ -36,7 +36,8 @@ RUN apk -U add \
     git \
     libvorbis-dev \
     opus-dev \
-    soxr-dev
+    soxr-dev \
+    libstdc++
 
 RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION https://github.com/badaix/snapcast.git \
     && cd snapcast \
