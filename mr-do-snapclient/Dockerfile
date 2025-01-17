@@ -35,24 +35,16 @@ FROM alpine as mr-do-snapclient
 LABEL maintainer="riemerk"
 
 RUN apk add --no-cache \
+    flac \
     alsa-lib \
     avahi-libs \
-    expat \
-    flac \
+    libgcc \
+    libogg \
     libvorbis \
     opus \
     soxr \
     libstdc++ \
-#    libstdc++6 \
-    g++
-
-RUN if [ "$TARGETARCH" = "arm" ] || [ "$TARGETARCH" = "arm/v6" ] || [ "$TARGETARCH" = "arm/v7" ]  || [ "$TARGETPLATFORM" = "linux/arm/v6" ] || [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
-    echo "Executing commands for $TARGETARCH architecture"; \
-    apk add --no-cache libstdc++ g++\
-    #    apk add --no-cache lib32stdc++6 \
-    else \
-    echo "Executing commands for other $TARGETARCH architecture"; \
-    fi
+    libvorbis
 
 RUN rm -rf \
     /etc/ssl \
