@@ -7,16 +7,19 @@ RUN apk -U add \
     portaudio-dev \
     protobuf-dev \
     cmake
-
+# RUN cargo install --force --locked bindgen-cli
 #RUN cargo install librespot
 
 #RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
 
+# -----------------------------------------------------------------
 #RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 #RUN git clone https://github.com/librespot-org/librespot.git && \
 #    cd librespot && \
 #    cargo build --release --no-default-features
+
+# RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
 
 # ****** ****** ****** ****** ****** ****** ****** ****** 
 
@@ -59,22 +62,28 @@ ARG SNAPCAST_VERSION=master
 #    && make -C snapweb
 
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
-RUN apk add --no-cache bash snapcast 
+RUN apk add --no-cache snapcast 
 
 # Final stage
 FROM alpine as mr-do-snapserver
 LABEL maintainer="riemerk"
 
+RUN apk add --no-cache -X \
+    librespot
+
+
 RUN apk add --no-cache \
+    flac \
     alsa-lib \
     avahi-libs \
-    expat \
-    flac \
+    libgcc \
+    libogg \
     libvorbis \
     opus \
-    soxr 
-
-RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
+    soxr \
+    libstdc++ \
+    libvorbis
+#    expat
 
 RUN rm -rf \
     /etc/ssl \
