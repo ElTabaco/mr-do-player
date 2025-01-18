@@ -46,7 +46,7 @@ RUN apk add --no-cache \
     libstdc++ \
     libvorbis
 
-RUN apk add --no-cache \
+RUN apk del --no-cache \
     wget
 
 RUN rm -rf \
