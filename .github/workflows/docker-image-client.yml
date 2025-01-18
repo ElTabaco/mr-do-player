@@ -37,16 +37,17 @@ jobs:
         with:
           context: .
           file: 'mr-do-snapclient/Dockerfile'
-          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
+          platforms: linux/amd64
           push: false
-          tags: temp/snapcast:build
+          tags: tmpsnapclient:latest
 
       - name: List Docker images
         run: docker images
+
       - name: Extract Snapcast version
         id: get-version
         run: |
-            VERSION=$(docker run --rm temp/snapcast:build snapclient -v | awk 'NR==1 {print $2}' | sed 's/^v//')
+            VERSION=$(docker run --rm tmpsnapclient:latest snapclient -v | awk 'NR==1 {print $2}' | sed 's/^v//')
             echo "snapclient_version=$VERSION" >> $GITHUB_ENV
             echo "Snapclient Version: $VERSION"
 
