@@ -3,6 +3,10 @@ FROM alpine AS librespot
 RUN apk add --no-cache -X \
     http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
 
+
+RUN chown -R 777 /usr/bin/librespot \
+    && chown -R nobody:nogroup /usr/bin/librespot
+
 #WORKDIR /librespot
 
 #RUN apk -U add \
