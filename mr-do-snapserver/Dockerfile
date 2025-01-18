@@ -1,4 +1,7 @@
-#FROM alpine AS librespot
+FROM alpine AS librespot
+
+RUN apk add --no-cache -X \
+    http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
 
 #WORKDIR /librespot
 
@@ -7,7 +10,7 @@
 #    portaudio-dev \
 #    protobuf-dev \
 #    cmake
-# RUN cargo install --force --locked bindgen-cli
+#RUN cargo install --force --locked bindgen-cli
 #RUN cargo install librespot
 
 #RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
@@ -18,8 +21,6 @@
 #RUN git clone https://github.com/librespot-org/librespot.git && \
 #    cd librespot && \
 #    cargo build --release --no-default-features
-
-# RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
 
 # ****** ****** ****** ****** ****** ****** ****** ****** 
 
@@ -65,6 +66,7 @@ ARG SNAPCAST_VERSION=master
 #    && make -C snapweb
 
 RUN wget https://github.com/badaix/snapweb/releases/download/v0.8.0/snapweb.zip \
+    && mkdir -p /usr/share/snapserver/snapweb/ \
     && unzip -d /usr/share/snapserver/snapweb/ snapweb.zip 
 
 # Final stage
@@ -84,12 +86,13 @@ RUN apk add --no-cache \
     libstdc++ \
     libvorbis
 
-RUN apk add --no-cache -X \
-    http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
+# librespot dependencies
+RUN apk add --no-cache \
+    musl
 
-RUN apk del --no-cache \
-    uzip \
-    wget
+#RUN apk del --no-cache \
+#    uzip \
+#    wget
 
 RUN rm -rf \
     /etc/ssl \
@@ -102,6 +105,7 @@ COPY --from=snapserver snapcast/bin/snapserver /usr/local/bin/
 # COPY --from=snapserver server/etc/snapserver.conf /etc/
 COPY --from=snapweb /usr/share/snapserver/snapweb /usr/share/snapserver/snapweb
 #COPY --from=librespot /root/.cargo/bin/librespot /usr/local/bin/
+COPY --from=librespot /usr/bin/librespot /usr/local/bin/
 
 ENV DEVICE_NAME=mr-do-snapserver
 EXPOSE 1704/tcp 1705/tcp 1780/tcp
