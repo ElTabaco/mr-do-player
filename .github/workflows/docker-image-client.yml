@@ -39,6 +39,7 @@ jobs:
           file: 'mr-do-snapclient/Dockerfile'
           platforms: linux/amd64
           push: false
+          load: true
           tags: tmpsnapclient:latest
 
       - name: List Docker images
