@@ -35,6 +35,8 @@ jobs:
           push: false
           tags: temp/snapcast:build
 
+      - name: List Docker images
+        run: docker images
       - name: Extract Snapcast version
         id: get-version
         run: |
