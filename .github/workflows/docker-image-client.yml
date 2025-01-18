@@ -29,10 +29,11 @@ jobs:
         id: build-image
         uses: docker/build-push-action@v4
         with:
-          push: false
-          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
-          tags: temp/snapcast:build
           context: .
+          file: 'mr-do-snapclient/Dockerfile'
+          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
+          push: false
+          tags: temp/snapcast:build
 
       - name: Extract Snapcast version
         id: get-version
