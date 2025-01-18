@@ -1,12 +1,12 @@
-FROM alpine AS librespot
+#FROM alpine AS librespot
 
-WORKDIR /librespot
+#WORKDIR /librespot
 
-RUN apk -U add \
-    cargo \
-    portaudio-dev \
-    protobuf-dev \
-    cmake
+#RUN apk -U add \
+#    cargo \
+#    portaudio-dev \
+#    protobuf-dev \
+#    cmake
 # RUN cargo install --force --locked bindgen-cli
 #RUN cargo install librespot
 
