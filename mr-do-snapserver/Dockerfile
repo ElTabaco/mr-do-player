@@ -57,12 +57,15 @@ ARG SNAPCAST_VERSION=master
 #RUN apk -U add \
 #    build-base \
 #    git \
-#    && npm install -g typescript \
-#    && git clone --recursive --depth 1 --branch $SNAPCAST_VERSION  https://github.com/badaix/snapweb.git \
+#    libflac \
+#    npm \
+#    && npm install -g typescript
+
+#RUN git clone --recursive --depth 1 --branch master https://github.com/badaix/snapweb.git \
 #    && make -C snapweb
 
-# RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
-RUN apk add --no-cache snapcast 
+RUN wget https://github.com/badaix/snapweb/releases/download/v0.8.0/snapweb.zip \
+    && unzip -d /usr/share/snapserver/snapweb/ snapweb.zip 
 
 # Final stage
 FROM alpine as mr-do-snapserver
@@ -85,6 +88,7 @@ RUN apk add --no-cache -X \
     http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
 
 RUN apk del --no-cache \
+    uzip \
     wget
 
 RUN rm -rf \
