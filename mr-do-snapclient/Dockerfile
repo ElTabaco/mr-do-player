@@ -46,11 +46,14 @@ RUN apk add --no-cache \
     libstdc++ \
     libvorbis
 
+RUN apk add --no-cache \
+    wget
+
 RUN rm -rf \
     /etc/ssl \
     /var/cache/apk/* \
     /lib/apk/db/* \
-    /root/snapcast \
+    /etc/apk/repositories \
     /usr/bin/dummy
 
 COPY --from=snapclient /root/snapcast/bin/snapclient /usr/local/bin

@@ -61,7 +61,7 @@ ARG SNAPCAST_VERSION=master
 #    && git clone --recursive --depth 1 --branch $SNAPCAST_VERSION  https://github.com/badaix/snapweb.git \
 #    && make -C snapweb
 
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
+# RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
 RUN apk add --no-cache snapcast 
 
 # Final stage
@@ -76,6 +76,7 @@ RUN apk add --no-cache \
     flac \
     alsa-lib \
     avahi-libs \
+    libexpat \
     libgcc \
     libogg \
     libvorbis \
@@ -83,18 +84,20 @@ RUN apk add --no-cache \
     soxr \
     libstdc++ \
     libvorbis
-#    expat
+
+RUN apk add --no-cache \
+    wget
 
 RUN rm -rf \
     /etc/ssl \
     /var/cache/apk/* \
     /lib/apk/db/* \
-    /root/snapcast \
+    /etc/apk/repositories \
     /usr/bin/dummy
 
 COPY --from=snapserver snapcast/bin/snapserver /usr/local/bin/
+# COPY --from=snapserver server/etc/snapserver.conf /etc/
 COPY --from=snapweb /usr/share/snapserver/snapweb /usr/share/snapserver/snapweb
-#COPY --from=snapweb snapweb/dist/ /usr/share/snapserver/snapweb
 #COPY --from=librespot /root/.cargo/bin/librespot /usr/local/bin/
 
 ENV DEVICE_NAME=mr-do-snapserver
