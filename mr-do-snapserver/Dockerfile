@@ -68,10 +68,6 @@ RUN apk add --no-cache snapcast
 FROM alpine as mr-do-snapserver
 LABEL maintainer="riemerk"
 
-RUN apk add --no-cache -X \
-    librespot
-
-
 RUN apk add --no-cache \
     flac \
     alsa-lib \
@@ -84,6 +80,9 @@ RUN apk add --no-cache \
     soxr \
     libstdc++ \
     libvorbis
+
+RUN apk add --no-cache -X \
+    http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
 
 RUN apk del --no-cache \
     wget
