@@ -24,11 +24,29 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        id: build-image
+        uses: docker/build-push-action@v4
+        with:
+          push: false
+          platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
+          tags: temp/snapcast:build
+          context: .
+
+      - name: Extract Snapcast version
+        id: get-version
+        run: |
+            VERSION=$(docker run --rm riemerk/mr-do-snapclient:latest snapclient -v | awk 'NR==1 {print $2}' | sed 's/^v//')
+            echo "snapclient_version=$VERSION" >> $GITHUB_ENV
+            echo "Snapclient Version: $VERSION"
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build and push mr-do-snapclient
         uses: docker/build-push-action@v4
         with:
@@ -36,4 +54,6 @@ jobs:
           file: 'mr-do-snapclient/Dockerfile'
           platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
           push: true
-          tags: riemerk/mr-do-snapclient:latest
+          tags: |
+              ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:latest
+              ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:${{ env.snapclient_version }}
