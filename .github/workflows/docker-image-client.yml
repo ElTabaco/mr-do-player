@@ -37,7 +37,7 @@ jobs:
       - name: Extract Snapcast version
         id: get-version
         run: |
-            VERSION=$(docker run --rm riemerk/mr-do-snapclient:latest snapclient -v | awk 'NR==1 {print $2}' | sed 's/^v//')
+            VERSION=$(docker run --rm temp/snapcast:build snapclient -v | awk 'NR==1 {print $2}' | sed 's/^v//')
             echo "snapclient_version=$VERSION" >> $GITHUB_ENV
             echo "Snapclient Version: $VERSION"
 
