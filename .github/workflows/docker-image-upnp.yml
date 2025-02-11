@@ -27,7 +27,7 @@ jobs:
       - name: Extract version
         id: get-version
         run: |
-          VERSION=$(0.1.0)
+          VERSION=0.1.0
           echo "snapserver_version=$VERSION" >> $GITHUB_ENV
           echo "snapserver Version: $VERSION"
       - name: Build and push mr-do-upnp
