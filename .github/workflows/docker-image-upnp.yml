@@ -24,6 +24,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Extract version
+        id: get-version
+        run: |
+          VERSION=$(0.1.0)
+          echo "snapserver_version=$VERSION" >> $GITHUB_ENV
+          echo "snapserver Version: $VERSION"
       - name: Build and push mr-do-upnp
         uses: docker/build-push-action@v4
         with:
@@ -31,7 +37,9 @@ jobs:
           file: 'mr-do-upnp/Dockerfile'
           platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
           push: true
-          tags: riemerk/mr-do-upnp:latest
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/mr-do-upnp:latest
+            ${{ secrets.DOCKER_USERNAME }}/mr-do-upnp:${{ env.snapserver_version }}
 #      - name: Run the Docker container
 #        run: |
 #          docker run -d --name dlna-test -p 8200:8200 -p 12345:12345 my-dlna-image
