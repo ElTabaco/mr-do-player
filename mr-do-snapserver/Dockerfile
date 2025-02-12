@@ -76,15 +76,18 @@ FROM alpine as mr-do-snapserver
 LABEL maintainer="riemerk"
 
 RUN apk add --no-cache \
-    flac \
+    libflac \
     alsa-lib \
     avahi-libs \
+    musl \
+    libcrypto3 \
     libexpat \
     libgcc \
     libogg \
-    libvorbis \
+#    libvorbis \
     opus \
     soxr \
+    libssl3 \
     libstdc++ \
     libvorbis
 
