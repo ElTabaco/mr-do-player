@@ -75,21 +75,21 @@ RUN wget https://github.com/badaix/snapweb/releases/download/v0.8.0/snapweb.zip 
 FROM alpine as mr-do-snapserver
 LABEL maintainer="riemerk"
 
-RUN apk add --no-cache \
+RUN apk update && apk upgrade \
+    && apk add --no-cache \
     libflac \
     alsa-lib \
     avahi-libs \
     musl \
-    libcrypto3 \
     libexpat \
     libgcc \
     libogg \
-#    libvorbis \
     opus \
     soxr \
-    libssl3 \
+    openssl \
     libstdc++ \
-    libvorbis
+    libvorbis \
+    libressl-dev
 
 RUN apk del --no-cache \
     unzip \
