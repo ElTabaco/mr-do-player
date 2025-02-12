@@ -28,8 +28,8 @@ jobs:
         id: get-version
         run: |
           VERSION=0.1.0
-          echo "snapserver_version=$VERSION" >> $GITHUB_ENV
-          echo "snapserver Version: $VERSION"
+          echo "upnp_version=$VERSION" >> $GITHUB_ENV
+          echo "upnp Version: $VERSION"
       - name: Build and push mr-do-upnp
         uses: docker/build-push-action@v4
         with:
@@ -39,7 +39,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/mr-do-upnp:latest
-            ${{ secrets.DOCKER_USERNAME }}/mr-do-upnp:${{ env.snapserver_version }}
+            ${{ secrets.DOCKER_USERNAME }}/mr-do-upnp:${{ env.upnp_version }}
 #      - name: Run the Docker container
 #        run: |
 #          docker run -d --name dlna-test -p 8200:8200 -p 12345:12345 my-dlna-image
