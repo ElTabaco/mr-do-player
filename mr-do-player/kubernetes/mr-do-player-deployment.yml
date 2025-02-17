@@ -17,6 +17,8 @@ spec:
       labels:
         app: mr-do-player
     spec:
+      nodeSelector:
+        cputype: amd64
       hostNetwork: true
       containers:
         - name: mr-do-upnp
