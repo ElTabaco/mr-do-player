@@ -3,22 +3,12 @@ kind: Service
 metadata:
   namespace: mr-do-player
   name: mr-do-player-service
-#  annotations:
-#    metallb.universe.tf/loadBalancerIPs: 192.168.0.200
 spec:
   selector:
     app: mr-do-player
   type: LoadBalancer
   loadBalancerIP: 192.168.0.6
   ports:
-#    - port: 43345
-#      targetPort: 43345
-#      protocol: UDP
-#      name: upnp1
-#    - port: 33503
-#      targetPort: 33503
-#      protocol: UDP
-#      name: upnp2
     - port: 49494
       targetPort: 49494
       protocol: TCP
@@ -43,6 +33,7 @@ spec:
     # libre
     - port: 42661
       targetPort: 42661
+      protocol: UDP
       name: libre
     - port: 4070
       targetPort: 4070
