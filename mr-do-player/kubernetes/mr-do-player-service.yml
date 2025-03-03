@@ -33,7 +33,7 @@ spec:
     # libre
     - port: 42661
       targetPort: 42661
-      protocol: UDP
+      protocol: UDP # TCP ?? UDP
       name: libre
     - port: 4070
       targetPort: 4070
