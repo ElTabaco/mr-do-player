@@ -19,7 +19,7 @@ spec:
     spec:
       nodeSelector:
         cputype: amd64
-      hostNetwork: true
+#      hostNetwork: true
       containers:
         - name: mr-do-upnp
           image: riemerk/mr-do-upnp:latest
