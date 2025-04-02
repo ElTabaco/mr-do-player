@@ -7,7 +7,7 @@ spec:
   selector:
     app: mr-do-player
   type: LoadBalancer
-  loadBalancerIP: 192.168.0.6
+#  loadBalancerIP: 192.168.0.6
   ports:
     - port: 49494
       targetPort: 49494
@@ -33,12 +33,12 @@ spec:
     # libre
     - port: 42661
       targetPort: 42661
-      protocol: UDP # TCP ?? UDP
+      protocol: UDP
       name: libre
-    - port: 4070
-      targetPort: 4070
-      protocol: TCP
-      name: libreapp
+#    - port: 4070
+#      targetPort: 4070
+#      protocol: TCP
+#      name: app-port
     - port: 5353
       targetPort: 5353
       protocol: UDP
