@@ -18,6 +18,7 @@ spec:
       nodeSelector:
         cputype: amd64
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: mr-do-upnp
           image: riemerk/mr-do-upnp:latest
