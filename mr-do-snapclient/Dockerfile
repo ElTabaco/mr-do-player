@@ -51,9 +51,7 @@ RUN apk del --no-cache \
     wget
 
 RUN rm -rf \
-    /etc/ssl \
     /var/cache/apk/* \
-    /lib/apk/db/* \
     /etc/apk/repositories \
     /usr/bin/dummy
 
