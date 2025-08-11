@@ -35,20 +35,26 @@ RUN git clone --recursive --depth 1 --branch $SNAPCAST_VERSION https://github.co
 FROM alpine as mr-do-snapclient
 LABEL maintainer="riemerk"
 
-RUN apk add --no-cache \
-    flac \
+RUN apk update && apk upgrade \
+    && apk add --no-cache \
+    libflac \
     alsa-lib \
     avahi-libs \
+    musl \
+    libexpat \
     libgcc \
     libogg \
-    libvorbis \
     opus \
     soxr \
     openssl \
     libstdc++ \
+    libvorbis \
+    libressl-dev \
     libvorbis
 
 RUN apk del --no-cache \
+    unzip \
+    which \
     wget
 
 RUN rm -rf \
