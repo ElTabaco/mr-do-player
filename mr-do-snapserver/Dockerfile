@@ -66,7 +66,7 @@ ARG SNAPCAST_VERSION=master
 #RUN git clone --recursive --depth 1 --branch master https://github.com/badaix/snapweb.git \
 #    && make -C snapweb
 
-RUN wget https://github.com/badaix/snapweb/releases/download/v0.8.0/snapweb.zip \
+RUN wget https://github.com/badaix/snapweb/releases/download/v0.9.1/snapweb.zip \
     && mkdir -p /usr/share/snapserver/snapweb/ \
     && unzip -d /usr/share/snapserver/snapweb/ snapweb.zip 
 
