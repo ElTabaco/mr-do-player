@@ -1,19 +1,19 @@
 FROM alpine AS librespot
 
-RUN apk add --no-cache -X \
-    http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
+#RUN apk add --no-cache -X \
+#    http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
 
 #WORKDIR /librespot
 
-#RUN apk -U add \
-#    cargo \
-#    portaudio-dev \
-#    protobuf-dev \
-#    cmake
-#RUN cargo install --force --locked bindgen-cli
-#RUN cargo install librespot
+RUN apk -U add \
+    cargo \
+    portaudio-dev \
+    protobuf-dev \
+    cmake 
+RUN cargo install --force --locked bindgen-cli
+RUN cargo install librespot
 
-#RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
+RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
 
 # -----------------------------------------------------------------
 #RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
