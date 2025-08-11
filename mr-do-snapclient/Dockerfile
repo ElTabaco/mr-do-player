@@ -44,6 +44,7 @@ RUN apk add --no-cache \
     libvorbis \
     opus \
     soxr \
+    openssl \
     libstdc++ \
     libvorbis
 
