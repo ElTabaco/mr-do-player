@@ -5,29 +5,37 @@ FROM alpine AS librespot
 
 #WORKDIR /librespot
 
-RUN apk -U add \
-    cargo \
-    portaudio-dev \
-    protobuf-dev \
-    cmake 
-RUN cargo install --force --locked bindgen-cli
-RUN cargo install librespot
+#RUN apk -U add \
+#    cargo \
+#    portaudio-dev \
+#    protobuf-dev \
+#    cmake 
+#RUN cargo install --force --locked bindgen-cli
+#RUN cargo install librespot
 
-RUN cp -r /root/.cargo/bin/librespot /usr/bin
+#RUN cp -r /root/.cargo/bin/librespot /usr/bin
 
 # -----------------------------------------------------------------
-#RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
-#RUN git clone https://github.com/librespot-org/librespot.git && \
-#    cd librespot && \
-#    cargo build --release --no-default-features
+RUN apk -U add && apk add --no-cache \
+    curl \
+    git \
+    cargo
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+RUN git clone https://github.com/librespot-org/librespot.git && \
+    cd librespot && \
+    cargo build --release --no-default-features
+
+RUN cp -r target/release/librespot /usr/bin
 
 # ****** ****** ****** ****** ****** ****** ****** ****** 
 
 FROM alpine as snapserver
 ARG SNAPCAST_VERSION=master
 
-RUN apk -U add \
+RUN apk -U add && apk add --no-cache \
     alsa-lib-dev \
     avahi-dev \
     bash \
