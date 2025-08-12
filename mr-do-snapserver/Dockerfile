@@ -30,7 +30,7 @@ RUN git clone https://github.com/librespot-org/librespot.git && \
     
 RUN ls
 
-RUN cp -r /root/librespot/target/release/librespot /usr/bin
+RUN cp -r librespot/target/release/librespot /usr/bin
 
 # ****** ****** ****** ****** ****** ****** ****** ****** 
 
