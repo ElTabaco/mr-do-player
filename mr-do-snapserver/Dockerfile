@@ -13,7 +13,7 @@ RUN apk -U add \
 RUN cargo install --force --locked bindgen-cli
 RUN cargo install librespot
 
-RUN cp -r /root/.cargo/bin/librespot /usr/local/bin
+RUN cp -r /root/.cargo/bin/librespot /usr/bin
 
 # -----------------------------------------------------------------
 #RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
