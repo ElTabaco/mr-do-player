@@ -26,7 +26,8 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 RUN git clone https://github.com/librespot-org/librespot.git && \
     cd librespot && \
-    cargo build --release --no-default-features
+    cargo build --release --no-default-features&& \
+    ls
 
 RUN cp -r target/release/librespot /usr/bin
 
