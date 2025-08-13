@@ -26,10 +26,9 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 RUN git clone https://github.com/librespot-org/librespot.git && \
     cd librespot && \
-    cargo build --release
-    # --no-default-features
-    
-RUN ls
+    cargo build --release --no-default-features --features "with-libmdns"
+# cargo build --release --no-default-features --features "with-libmdns,passthrough-decoder"
+
 
 RUN cp -r librespot/target/release/librespot /usr/bin
 
