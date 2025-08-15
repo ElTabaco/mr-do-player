@@ -3,6 +3,8 @@ FROM alpine AS librespot
 #RUN apk add --no-cache -X \
 #    http://dl-cdn.alpinelinux.org/alpine/edge/testing librespot
 
+# -----------------------------------------------------------------
+
 #WORKDIR /librespot
 
 #RUN apk -U add \
@@ -26,7 +28,7 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 RUN git clone https://github.com/librespot-org/librespot.git && \
     cd librespot && \
-    cargo build --release --no-default-features --features "with-libmdns"
+    cargo build --release --no-default-features --features "with-libmdns,passthrough-decoder"
 # cargo build --release --no-default-features --features "with-libmdns,passthrough-decoder"
 
 
@@ -115,7 +117,6 @@ RUN rm -rf \
 COPY --from=snapserver snapcast/bin/snapserver /usr/local/bin/
 # COPY --from=snapserver server/etc/snapserver.conf /etc/
 COPY --from=snapweb /usr/share/snapserver/snapweb /usr/share/snapserver/snapweb
-#COPY --from=librespot /root/.cargo/bin/librespot /usr/local/bin/
 COPY --from=librespot /usr/bin/librespot /usr/local/bin/
 
 ENV DEVICE_NAME=mr-do-snapserver
