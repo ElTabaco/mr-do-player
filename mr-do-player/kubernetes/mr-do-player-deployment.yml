@@ -19,6 +19,13 @@ spec:
         cputype: amd64
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      # Workaround for spotify
+      hostAliases:
+      - ip: "0.0.0.0"
+          hostnames:
+#            - "location.spoti.com"
+            - "apresolve.spotify.com"
+      # Workaround for spotify
       containers:
         - name: mr-do-upnp
           image: riemerk/mr-do-upnp:latest
