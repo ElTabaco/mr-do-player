@@ -22,9 +22,9 @@ spec:
       # Workaround for spotify
       hostAliases:
       - ip: "0.0.0.0"
-          hostnames:
+        hostnames:
 #            - "location.spoti.com"
-            - "apresolve.spotify.com"
+          - "apresolve.spotify.com"
       # Workaround for spotify
       containers:
         - name: mr-do-upnp

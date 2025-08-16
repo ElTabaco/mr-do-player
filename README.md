@@ -7,6 +7,8 @@
 
 ## Snapserver
 
+[![CI](https://github.com/ElTabaco/mr-do-player/actions/workflows/docker-image-master.yml/badge.svg)](https://hub.docker.com/r/riemerk/mr-do-snapserver)
+
 ### ARM64
 
 [![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-snapserver/latest?arch=arm64)](https://hub.docker.com/r/riemerk/mr-do-snapserver)
@@ -20,6 +22,9 @@
 [![docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-snapserver)](https://hub.docker.com/r/riemerk/mr-do-snapserver)
 
 ## Snapclient
+
+[![CI](https://github.com/ElTabaco/mr-do-player/actions/workflows/docker-image-client.yml/badge.svg)](https://hub.docker.com/r/riemerk/mr-do-snapclient)
+[![docker image size](https://img.shields.io/docker/v/riemerk/mr-do-snapclient/latest?arch=arm64)](https://hub.docker.com/r/riemerk/mr-do-snapclient)
 
 ### ARM64
 
@@ -39,6 +44,7 @@
 
 ## UPnP / dlna
 
+[![CI](https://github.com/ElTabaco/mr-do-player/actions/workflows/docker-image-upnp.yml/badge.svg)](https://hub.docker.com/r/riemerk/mr-do-upnp)
 ### ARM64
 
 [![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-upnp/latest?arch=arm64)](https://hub.docker.com/r/riemerk/mr-do-upnp)
