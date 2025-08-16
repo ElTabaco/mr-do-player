@@ -1,8 +1,5 @@
 # mr-do-player
 
-[![Build Images](https://github.com/riemerk/mr-do-snapserver/actions/workflows/actions.yml/badge.svg?branch=master)](https://github.com/riemerk/mr-do-snapserver/actions/workflows/actions.yml)
-
-
 # Images:
 
 ## Snapserver
