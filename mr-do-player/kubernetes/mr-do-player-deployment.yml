@@ -45,7 +45,7 @@ spec:
             - name: mr-do-snapserver-data
               mountPath: /tmp/music
         - name: mr-do-snapserver
-          image: riemerk/mr-do-snapserver:0.32.3
+          image: riemerk/mr-do-snapserver:0.34
           ports:
             # snapclien
             - containerPort: 1780
