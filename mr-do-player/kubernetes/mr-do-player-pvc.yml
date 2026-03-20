@@ -4,7 +4,7 @@ metadata:
   namespace: mr-do-player
   name: mr-do-player-pvc-data
 spec:
-  storageClassName: nfs
+  storageClassName: ""
   accessModes:
     - ReadWriteMany
   resources:

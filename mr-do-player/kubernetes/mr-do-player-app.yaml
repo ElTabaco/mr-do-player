@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mr-do-player
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ElTabaco/mr-do-player.git
+    targetRevision: main
+    path: mr-do-player/kubernetes
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mr-do-player
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
