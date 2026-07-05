@@ -3,19 +3,22 @@ kind: PersistentVolume
 metadata:
   name: mr-do-player-pv-data
   labels:
-#    app.kubernetes.io/instance: mr-do-player
+    app.kubernetes.io/name: mr-do-player
+    app.kubernetes.io/component: storage
     usage: mr-do-player-pv-data
 spec:
   capacity:
     storage: 1Gi
   storageClassName: ""
   accessModes:
-  - ReadWriteMany
-#  persistentVolumeReclaimPolicy: Recycle
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
-#  mountOptions:
-#   - hard
-#   - nfsvers=4.1
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+    - timeo=600
+    - retrans=3
   nfs:
     server: mr0.local
     path: "/srv/nfs4/homes/mr/media"

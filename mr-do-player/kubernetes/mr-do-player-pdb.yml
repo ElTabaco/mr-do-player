@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  namespace: mr-do-player
+  name: mr-do-player-pdb
+  labels:
+    app.kubernetes.io/name: mr-do-player
+    app.kubernetes.io/component: player
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mr-do-player

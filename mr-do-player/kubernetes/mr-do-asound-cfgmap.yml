@@ -1,4 +1,11 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mr-do-asound-cfgmap
+  namespace: mr-do-player
+  labels:
+    app.kubernetes.io/name: mr-do-player
+    app.kubernetes.io/component: upnp
 data:
   asound.conf: |
     pcm.!default {
@@ -21,10 +28,3 @@ data:
         file "/tmp/music/upnpfifo"
         format "raw"
     }
-kind: ConfigMap
-metadata:
-  creationTimestamp: "2025-01-07T22:51:48Z"
-  name: mr-do-asound-cfgmap
-  namespace: mr-do-player
-#  resourceVersion: "20357861"
-#  uid: d691b545-9eed-45b1-9f95-d6e9c14c8271

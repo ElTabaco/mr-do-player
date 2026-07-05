@@ -3,42 +3,54 @@ kind: Service
 metadata:
   namespace: mr-do-player
   name: mr-do-player-service
+  labels:
+    app.kubernetes.io/name: mr-do-player
+    app.kubernetes.io/component: player
 spec:
   selector:
-    app: mr-do-player
-  # Stable LB IP for all services (MetalLB L2 ARP)
+    app.kubernetes.io/name: mr-do-player
   type: LoadBalancer
   loadBalancerIP: 192.168.0.20
-  # Preserve client source IP; only route to local pods (no cross-node hop)
   externalTrafficPolicy: Local
+  # NOTE: With a single hostNetwork replica, the LB will have zero healthy
+  # endpoints during pod restarts/drain. 192.168.0.20 will briefly blackhole.
+  # This is acceptable for a homelab audio endpoint; if HA is needed later,
+  # run the snapserver as headless Service + active/passive failover.
   ports:
-    # --- UPnP / DLNA renderer ---
+    # --- UPnP / DLNA renderer (unicast HTTP control) ---
     - port: 49494
       targetPort: upnp-http
       protocol: TCP
       name: upnp-renderer
+    # --- SSDP discovery (1900/UDP, multicast 239.255.255.250) ---
+    # Multicast cannot be DNAT'd by MetalLB; discovery relies on hostNetwork.
+    # This port entry only fronts the unicast response path.
     - port: 1900
       targetPort: upnp-ssdp
       protocol: UDP
       name: upnp-ssdp
-    # --- Snapcast ---
+    # --- Snapcast web UI ---
     - port: 1780
       targetPort: webinterface
       protocol: TCP
       name: webinterface
+    # --- Snapcast stream ---
     - port: 1704
       targetPort: snapcast-stream
       protocol: TCP
       name: snapcast-stream
+    # --- Snapcast control ---
     - port: 1705
       targetPort: snapcast-control
       protocol: TCP
       name: snapcast-control
-    # --- librespot (Spotify Connect) ---
+    # --- librespot zeroconf (Spotify Connect) ---
     - port: 42661
       targetPort: librespot
       protocol: UDP
       name: librespot
+    # --- mDNS (5353/UDP, multicast 224.0.0.251) ---
+    # Multicast cannot be DNAT'd by MetalLB; discovery relies on hostNetwork.
     - port: 5353
       targetPort: mdns
       protocol: UDP

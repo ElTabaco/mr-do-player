@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: mr-do-player
   namespace: argocd
+  labels:
+    app.kubernetes.io/name: mr-do-player
+    app.kubernetes.io/managed-by: argocd
 spec:
   project: default
   source:
@@ -16,5 +19,28 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - PruneLast=true
+      - PrunePropagationPolicy=foreground
+    ignoreDifferences:
+      # ArgoCD fights runtime-assigned fields on LoadBalancer Services
+      - group: ""
+        kind: Service
+        name: mr-do-player-service
+        jsonPointers:
+          - /status
+          - /spec/clusterIP
+          - /spec/clusterIPs
+          - /spec/externalTrafficPolicy
+          - /spec/ipFamilyPolicy
+          - /spec/ipFamilies
+          - /spec/sessionAffinity

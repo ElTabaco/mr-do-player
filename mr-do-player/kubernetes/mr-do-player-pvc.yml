@@ -3,6 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: mr-do-player
   name: mr-do-player-pvc-data
+  labels:
+    app.kubernetes.io/name: mr-do-player
+    app.kubernetes.io/component: storage
 spec:
   storageClassName: ""
   accessModes:

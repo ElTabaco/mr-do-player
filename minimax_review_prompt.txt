@@ -1,0 +1,309 @@
+You are a senior Kubernetes + GitOps reviewer. Review these manifests for a Snapcast multi-room audio deployment. Two containers share one pod: a UPnP/DLNA renderer (gmediarender, writes audio to a FIFO via ALSA) and a Snapcast server (reads the FIFO, also runs librespot for Spotify Connect).
+
+Key design decisions (DO NOT flag these as issues, they are intentional):
+- hostNetwork: true is REQUIRED — mDNS multicast (5353/UDP) and SSDP (1900/UDP) for Spotify Connect / DLNA discovery cannot traverse MetalLB L2 (unicast DNAT only).
+- LoadBalancer 192.168.0.20 fronts all unicast TCP/UDP ports.
+- replicas: 1 is correct — UPnP/DLNA + mDNS are stateful on the LAN, multiple replicas would conflict.
+- nodeSelector cputype: amd64 is environment-specific.
+- NFS server mr0.local is environment-specific.
+
+Find ALL issues. Categorize each finding strictly:
+- BUG — broken right now (invalid YAML, wrong cross-references, export artifacts left in, typos in field names/values)
+- RELIABILITY — missing probes, no resource limits, :latest images, missing revisionHistoryLimit, NFS without mount options, no PodDisruptionBudget
+- SECURITY — running as root, no securityContext, no capabilities drop, writable rootfs, privileged ports without justification
+- MAINTAINABILITY — commented-out export artifacts, non-standard labels, missing app.kubernetes.io/* labels, opaque workarounds without docs, ArgoCD sync options
+
+For each finding output a markdown table row: | # | file | section | issue | suggested fix |
+Output one table per category. Be specific about file and section. Do NOT repeat the intentional design decisions listed above.
+Do NOT output a <think> block — go straight to the tables.
+
+MANIFESTS:
+
+--- FILE: mr-do-asound-cfgmap.yml ---
+apiVersion: v1
+data:
+  asound.conf: |
+    pcm.!default {
+        type plug
+        slave.pcm rate48000Hz
+    }
+
+    pcm.rate48000Hz {
+        type rate
+        slave {
+            pcm writeFile # Direct to the plugin which will write to a file
+            format S16_LE
+            rate 48000
+        }
+    }
+
+    pcm.writeFile {
+        type file
+        slave.pcm null
+        file "/tmp/music/upnpfifo"
+        format "raw"
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-01-07T22:51:48Z"
+  name: mr-do-asound-cfgmap
+  namespace: mr-do-player
+#  resourceVersion: "20357861"
+#  uid: d691b545-9eed-45b1-9f95-d6e9c14c8271
+
+
+--- FILE: mr-do-player-app.yaml ---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mr-do-player
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ElTabaco/mr-do-player.git
+    targetRevision: main
+    path: mr-do-player/kubernetes
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mr-do-player
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+--- FILE: mr-do-player-deployment.yml ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: mr-do-player
+  name: mr-do-player
+  labels:
+    app: mr-do-player
+spec:
+  selector:
+    matchLabels:
+      app: mr-do-player
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mr-do-player
+    spec:
+      nodeSelector:
+        cputype: amd64
+      # hostNetwork MUST stay: librespot (Spotify Connect) and UPnP/DLNA
+      # discover peers via mDNS multicast (5353/UDP) and SSDP (1900/UDP).
+      # MetalLB L2 DNATs unicast to the LB IP (192.168.0.20) but cannot
+      # forward multicast. With hostNetwork the pod binds directly on the
+      # node's LAN interface, so Spotify phones/clients can find it.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: mr-do-upnp
+          image: riemerk/mr-do-upnp:latest
+          ports:
+            - containerPort: 49494
+              name: upnp-http
+            - containerPort: 1900
+              name: upnp-ssdp
+              protocol: UDP
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            - name: UPNP_NAME
+              value: mrCast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: mr-do-asound-cfgm
+              mountPath: /etc/asound.conf
+              subPath: asound.conf
+              readOnly: true
+            - name: mr-do-snapserver-data
+              mountPath: /tmp/music
+        - name: mr-do-snapserver
+          image: riemerk/mr-do-snapserver:0.34.0
+          ports:
+            - containerPort: 1780
+              name: webinterface
+            - containerPort: 1704
+              name: snapcast-stream
+            - containerPort: 1705
+              name: snapcast-control
+            # librespot zeroconf port (set via snapserver.conf params)
+            - containerPort: 42661
+              name: librespot
+              protocol: UDP
+            # mDNS for Spotify Connect device discovery (multicast, hostNetwork)
+            - containerPort: 5353
+              name: mdns
+              protocol: UDP
+          env:
+            - name: TZ
+              value: Europe/Berlin
+          livenessProbe:
+            tcpSocket:
+              port: 1705
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 1780
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          volumeMounts:
+            - name: mr-do-player-data
+              mountPath: /root/.config/snapserver
+              subPath: snapserver
+            - name: mr-do-snapserver-cfgm
+              mountPath: /etc/snapserver.conf
+              subPath: snapserver.conf
+              readOnly: true
+            - name: mr-do-snapserver-data
+              mountPath: /tmp/music
+      volumes:
+        - name: mr-do-snapserver-data
+          emptyDir: {}
+        - name: mr-do-player-data
+          persistentVolumeClaim:
+            claimName: mr-do-player-pvc-data
+        - name: mr-do-asound-cfgm
+          configMap:
+            name: mr-do-asound-cfgmap
+        - name: mr-do-snapserver-cfgm
+          configMap:
+            name: mr-do-snapserver-cfgmap
+
+
+--- FILE: mr-do-player-pv.yml ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mr-do-player-pv-data
+  labels:
+#    app.kubernetes.io/instance: mr-do-player
+    usage: mr-do-player-pv-data
+spec:
+  capacity:
+    storage: 1Gi
+  storageClassName: ""
+  accessModes:
+  - ReadWriteMany
+#  persistentVolumeReclaimPolicy: Recycle
+  volumeMode: Filesystem
+#  mountOptions:
+#   - hard
+#   - nfsvers=4.1
+  nfs:
+    server: mr0.local
+    path: "/srv/nfs4/homes/mr/media"
+    readOnly: false
+
+
+--- FILE: mr-do-player-pvc.yml ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: mr-do-player
+  name: mr-do-player-pvc-data
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      usage: mr-do-player-pv-data
+
+--- FILE: mr-do-player-service.yml ---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: mr-do-player
+  name: mr-do-player-service
+spec:
+  selector:
+    app: mr-do-player
+  # Stable LB IP for all services (MetalLB L2 ARP)
+  type: LoadBalancer
+  loadBalancerIP: 192.168.0.20
+  # Preserve client source IP; only route to local pods (no cross-node hop)
+  externalTrafficPolicy: Local
+  ports:
+    # --- UPnP / DLNA renderer ---
+    - port: 49494
+      targetPort: upnp-http
+      protocol: TCP
+      name: upnp-renderer
+    - port: 1900
+      targetPort: upnp-ssdp
+      protocol: UDP
+      name: upnp-ssdp
+    # --- Snapcast ---
+    - port: 1780
+      targetPort: webinterface
+      protocol: TCP
+      name: webinterface
+    - port: 1704
+      targetPort: snapcast-stream
+      protocol: TCP
+      name: snapcast-stream
+    - port: 1705
+      targetPort: snapcast-control
+      protocol: TCP
+      name: snapcast-control
+    # --- librespot (Spotify Connect) ---
+    - port: 42661
+      targetPort: librespot
+      protocol: UDP
+      name: librespot
+    - port: 5353
+      targetPort: mdns
+      protocol: UDP
+      name: mdns
+
+
+--- FILE: mr-do-snapserver-cfgmap.yml ---
+apiVersion: v1
+data:
+  snapserver.conf: |
+    [server]
+
+    [http]
+    doc_root = /usr/share/snapserver/snapweb
+
+    [tcp]
+
+    [stream]
+    stream = pipe:///tmp/music/upnpfifo?name=upnp&sampleformat=48000:16:2
+    source = librespot:///librespot?name=mrSpot&devicename=mrSpot&bitrate=320&sampleformat=48000:16:2&killall=false&params=--zeroconf-port%2042661
+    source = meta:///mrSpot/upnp?name=mrMusic
+    sampleformat = 48000:16:2
+    codec = flac
+
+    [logging]
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-01-05T22:14:25Z"
+  name: mr-do-snapserver-cfgmap
+  namespace: mr-do-player
+#  resourceVersion: "19833758"
+#  uid: 3ff39851-9c47-48af-ac9f-dc6026157e1e
+
