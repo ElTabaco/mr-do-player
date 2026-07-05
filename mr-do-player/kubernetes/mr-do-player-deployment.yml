@@ -44,13 +44,20 @@ spec:
         # ALSA's file plugin (gmediarender) writes, snapserver reads.
         - name: init-fifo
           image: busybox:1.36
-          command: ["sh", "-c", "rm -f /tmp/music/upnpfifo && mkfifo -m 0666 /tmp/music/upnpfifo"]
+          command: ["sh", "-c", "umask 0 && rm -f /tmp/music/upnpfifo && mkfifo -m 0666 /tmp/music/upnpfifo"]
           securityContext:
             runAsNonRoot: false
             runAsUser: 0
             allowPrivilegeEscalation: false
             capabilities:
               drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
           volumeMounts:
             - name: shared-data
               mountPath: /tmp/music
@@ -121,10 +128,14 @@ spec:
           env:
             - name: TZ
               value: Europe/Berlin
+          startupProbe:
+            tcpSocket:
+              port: 1705
+            failureThreshold: 30
+            periodSeconds: 5
           livenessProbe:
             tcpSocket:
               port: 1705
-            initialDelaySeconds: 10
             periodSeconds: 30
           readinessProbe:
             tcpSocket:
@@ -144,6 +155,7 @@ spec:
             capabilities:
               drop: ["ALL"]
           volumeMounts:
+            # Requires /srv/nfs4/homes/mr/media/snapserver/ to exist on NFS
             - name: player-data
               mountPath: /root/.config/snapserver
               subPath: snapserver
