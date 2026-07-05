@@ -23,20 +23,28 @@ spec:
       hostAliases:
       - ip: "0.0.0.0"
         hostnames:
-#            - "location.spoti.com"
           - "apresolve.spotify.com"
-      # Workaround for spotify
       containers:
         - name: mr-do-upnp
           image: riemerk/mr-do-upnp:latest
           ports:
             - containerPort: 49494
+              name: upnp-http
             - containerPort: 1900
+              name: upnp-ssdp
+              protocol: UDP
           env:
             - name: TZ
               value: Europe/Berlin
             - name: UPNP_NAME
               value: mrCast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
           volumeMounts:
             - name: mr-do-asound-cfgm
               mountPath: /etc/asound.conf
@@ -47,17 +55,38 @@ spec:
         - name: mr-do-snapserver
           image: riemerk/mr-do-snapserver:0.34.0
           ports:
-            # snapclien
             - containerPort: 1780
+              name: webinterface
             - containerPort: 1704
+              name: snapcast-stream
             - containerPort: 1705
-            # libre
+              name: snapcast-control
             - containerPort: 42661
-#            - containerPort: 4070
+              name: librespot
+              protocol: UDP
             - containerPort: 5353
+              name: mdns
+              protocol: UDP
           env:
             - name: TZ
               value: Europe/Berlin
+          livenessProbe:
+            tcpSocket:
+              port: 1705
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 1780
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
           volumeMounts:
             - name: mr-do-player-data
               mountPath: /root/.config/snapserver

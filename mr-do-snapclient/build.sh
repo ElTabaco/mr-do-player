@@ -1,10 +1,16 @@
 #!/bin/bash
 set -euo pipefail
-SNAPCAST_VERSION=master
-#SNAPCAST_VERSION=0.27.0
-ARCH=arm64
-echo ${SNAPCAST_VERSION}
 
-docker buildx build -t riemerk/mr-do-snapclient --build-arg ARCH=${ARCH} .
-# docker buildx build -t riemerk/mr-do-snapclient --platform linux/amd64,linux/arm64 --build-arg ARCH=${ARCH} .
-docker tag riemerk/mr-do-snapclient:latest riemer/mr-do-snapclient:${SNAPCAST_VERSION}-${ARCH}
+SNAPCAST_VERSION="${SNAPCAST_VERSION:-master}"
+IMAGE="riemerk/mr-do-snapclient"
+
+echo "Building ${IMAGE} (snapcast ${SNAPCAST_VERSION})"
+
+docker buildx build \
+    --tag "${IMAGE}:latest" \
+    --build-arg SNAPCAST_VERSION="${SNAPCAST_VERSION}" \
+    .
+
+VERSION=$(docker run --rm "${IMAGE}:latest" snapclient -v 2>/dev/null | awk 'NR==1 {print $2}' | sed 's/^v//' || echo "dev")
+docker tag "${IMAGE}:latest" "${IMAGE}:${VERSION}"
+echo "Tagged ${IMAGE}:${VERSION}"

@@ -1,9 +1,13 @@
 #!/bin/bash
-VERSION=27
-ARCH=arm64
-echo ${VERSION}
+set -euo pipefail
 
-#docker image push --all-tags riemerk/mr-do-upnp
-docker login -u "myusername" -p "mypassword" docker.io
-docker push riemerk/mr-do-upnp:latest
-docker push riemerk/mr-do-upnp:${VERSION}-ARCH=${ARCH}
+IMAGE="riemerk/mr-do-upnp"
+VERSION="${VERSION:-0.1.0}"
+
+if [[ -n "${DOCKER_USERNAME:-}" && -n "${DOCKER_PASSWORD:-}" ]]; then
+    echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+fi
+
+docker push "${IMAGE}:latest"
+docker push "${IMAGE}:${VERSION}"
+echo "Pushed ${IMAGE}:latest and ${IMAGE}:${VERSION}"
