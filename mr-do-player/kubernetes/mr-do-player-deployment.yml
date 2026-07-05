@@ -17,13 +17,13 @@ spec:
     spec:
       nodeSelector:
         cputype: amd64
+      # hostNetwork MUST stay: librespot (Spotify Connect) and UPnP/DLNA
+      # discover peers via mDNS multicast (5353/UDP) and SSDP (1900/UDP).
+      # MetalLB L2 DNATs unicast to the LB IP (192.168.0.20) but cannot
+      # forward multicast. With hostNetwork the pod binds directly on the
+      # node's LAN interface, so Spotify phones/clients can find it.
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      # Workaround for spotify
-      hostAliases:
-      - ip: "0.0.0.0"
-        hostnames:
-          - "apresolve.spotify.com"
       containers:
         - name: mr-do-upnp
           image: riemerk/mr-do-upnp:latest
@@ -61,9 +61,11 @@ spec:
               name: snapcast-stream
             - containerPort: 1705
               name: snapcast-control
+            # librespot zeroconf port (set via snapserver.conf params)
             - containerPort: 42661
               name: librespot
               protocol: UDP
+            # mDNS for Spotify Connect device discovery (multicast, hostNetwork)
             - containerPort: 5353
               name: mdns
               protocol: UDP

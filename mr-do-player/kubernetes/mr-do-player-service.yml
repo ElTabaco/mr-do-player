@@ -6,8 +6,13 @@ metadata:
 spec:
   selector:
     app: mr-do-player
-  type: ClusterIP
+  # Stable LB IP for all services (MetalLB L2 ARP)
+  type: LoadBalancer
+  loadBalancerIP: 192.168.0.20
+  # Preserve client source IP; only route to local pods (no cross-node hop)
+  externalTrafficPolicy: Local
   ports:
+    # --- UPnP / DLNA renderer ---
     - port: 49494
       targetPort: upnp-http
       protocol: TCP
@@ -16,6 +21,7 @@ spec:
       targetPort: upnp-ssdp
       protocol: UDP
       name: upnp-ssdp
+    # --- Snapcast ---
     - port: 1780
       targetPort: webinterface
       protocol: TCP
@@ -28,6 +34,7 @@ spec:
       targetPort: snapcast-control
       protocol: TCP
       name: snapcast-control
+    # --- librespot (Spotify Connect) ---
     - port: 42661
       targetPort: librespot
       protocol: UDP
