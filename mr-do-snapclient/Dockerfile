@@ -4,7 +4,7 @@
 # Stage 1: build snapclient
 # ============================================================
 FROM alpine:3.20 AS snapclient
-ARG SNAPCAST_VERSION=master
+ARG SNAPCAST_VERSION=develop
 
 RUN apk add --no-cache \
         alsa-lib-dev \

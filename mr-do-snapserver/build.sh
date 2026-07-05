@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-SNAPCAST_VERSION="${SNAPCAST_VERSION:-master}"
+SNAPCAST_VERSION="${SNAPCAST_VERSION:-develop}"
 IMAGE="riemerk/mr-do-snapserver"
 
 echo "Building ${IMAGE} (snapcast ${SNAPCAST_VERSION})"

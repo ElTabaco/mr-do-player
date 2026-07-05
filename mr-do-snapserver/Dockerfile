@@ -24,7 +24,7 @@ RUN cp librespot/target/release/librespot /usr/bin/librespot
 # Stage 2: build snapserver
 # ============================================================
 FROM alpine:3.20 AS snapserver
-ARG SNAPCAST_VERSION=master
+ARG SNAPCAST_VERSION=develop
 
 RUN apk add --no-cache \
         alsa-lib-dev \
