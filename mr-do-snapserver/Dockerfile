@@ -3,7 +3,7 @@
 # ============================================================
 # Stage 1: build librespot (Spotify client)
 # ============================================================
-FROM alpine:3.20 AS librespot
+FROM alpine:latest AS librespot
 
 RUN apk add --no-cache \
         curl \
@@ -23,7 +23,7 @@ RUN cp librespot/target/release/librespot /usr/bin/librespot
 # ============================================================
 # Stage 2: build snapserver
 # ============================================================
-FROM alpine:3.20 AS snapserver
+FROM alpine:latest AS snapserver
 ARG SNAPCAST_VERSION=develop
 
 RUN apk add --no-cache \
@@ -56,7 +56,7 @@ RUN git clone --recursive --depth 1 --branch ${SNAPCAST_VERSION} \
 # ============================================================
 # Stage 3: fetch snapweb UI
 # ============================================================
-FROM alpine:3.20 AS snapweb
+FROM alpine:latest AS snapweb
 
 RUN apk add --no-cache wget unzip && \
     wget -q https://github.com/badaix/snapweb/releases/download/v0.9.1/snapweb.zip && \
@@ -66,7 +66,7 @@ RUN apk add --no-cache wget unzip && \
 # ============================================================
 # Stage 4: final runtime image
 # ============================================================
-FROM alpine:3.20 AS mr-do-snapserver
+FROM alpine:latest AS mr-do-snapserver
 LABEL maintainer="riemerk"
 
 RUN apk add --no-cache \

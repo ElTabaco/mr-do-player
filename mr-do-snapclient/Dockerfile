@@ -3,7 +3,7 @@
 # ============================================================
 # Stage 1: build snapclient
 # ============================================================
-FROM alpine:3.20 AS snapclient
+FROM alpine:latest AS snapclient
 ARG SNAPCAST_VERSION=develop
 
 RUN apk add --no-cache \
@@ -35,7 +35,7 @@ RUN git clone --recursive --depth 1 --branch ${SNAPCAST_VERSION} \
 # ============================================================
 # Stage 2: final runtime image
 # ============================================================
-FROM alpine:3.20 AS mr-do-snapclient
+FROM alpine:latest AS mr-do-snapclient
 LABEL maintainer="riemerk"
 
 RUN apk add --no-cache \
