@@ -43,7 +43,7 @@ spec:
     - port: 1705
       targetPort: snapcast-control
       protocol: TCP
-      name: snapcast-control
+      name: snapcast-ctrl
     # --- librespot zeroconf (Spotify Connect) ---
     - port: 42661
       targetPort: librespot

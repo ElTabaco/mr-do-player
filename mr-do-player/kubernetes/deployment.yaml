@@ -116,7 +116,7 @@ spec:
             - containerPort: 1704
               name: snapcast-stream
             - containerPort: 1705
-              name: snapcast-control
+              name: snapcast-ctrl
             # librespot zeroconf port (set via snapserver.conf params)
             - containerPort: 42661
               name: librespot
