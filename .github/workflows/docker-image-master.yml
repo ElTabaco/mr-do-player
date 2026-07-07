@@ -4,8 +4,14 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
+    paths:
+      - 'mr-do-snapserver/**'
+      - '.github/workflows/docker-image-master.yml'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'mr-do-snapserver/**'
+      - '.github/workflows/docker-image-master.yml'
 
 jobs:
 
