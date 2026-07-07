@@ -3,8 +3,14 @@ name: Docker Image CI upnp
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'mr-do-upnp/**'
+      - '.github/workflows/docker-image-upnp.yml'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'mr-do-upnp/**'
+      - '.github/workflows/docker-image-upnp.yml'
 
 jobs:
 
