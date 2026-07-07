@@ -2,6 +2,7 @@
 set -euo pipefail
 
 SNAPCAST_VERSION="${SNAPCAST_VERSION:-develop}"
+LIBRESPOT_VERSION="${LIBRESPOT_VERSION:-dev}"
 IMAGE="riemerk/mr-do-snapserver"
 
 echo "Building ${IMAGE} (snapcast ${SNAPCAST_VERSION})"
@@ -9,6 +10,7 @@ echo "Building ${IMAGE} (snapcast ${SNAPCAST_VERSION})"
 docker buildx build \
     --tag "${IMAGE}:latest" \
     --build-arg SNAPCAST_VERSION="${SNAPCAST_VERSION}" \
+    --build-arg LIBRESPOT_VERSION="${LIBRESPOT_VERSION}" \
     .
 
 # Tag the version if the binary can report one
