@@ -13,13 +13,10 @@ spec:
     targetRevision: main
     # Path points at the directory containing kustomization.yaml
     path: mr-do-player/kubernetes
-    # Explicit: render via Kustomize so the renamed kind-suffixed files
-    # resolve correctly. Without this ArgoCD might still auto-detect it,
-    # but stating the intent makes lifecycle / upgrades unambiguous.
-    kustomize:
-      # kustomization.yaml in path roots every resource by kind-suffixed name
-      # (e.g. deployment.yaml, service.yaml). No patches / overlays today.
-      version: v5.8.1
+    # ArgoCD auto-detects Kustomize via the kustomization.yaml file
+    # in the path. Do not pin a version because ArgoCD's version
+    # registry is build-dependent and may not include the installed
+    # binary (see issue history).
   destination:
     server: https://kubernetes.default.svc
     namespace: mr-do-player
