@@ -3,54 +3,63 @@ name: Docker Image CI client
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        platform:
+#          - linux/amd64
+#          - linux/arm/v6
+#          - linux/arm/v7
+#          - linux/arm64
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
+        uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
+        uses: docker/setup-buildx-action@v2
+        
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build (probe for version)
+      - name: Build Docker image
         id: build-image
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: mr-do-snapclient/Dockerfile
+          file: 'mr-do-snapclient/Dockerfile'
           platforms: linux/amd64
           push: false
           load: true
           tags: tmpsnapclient:latest
 
+      - name: List Docker images
+        run: docker images
+
       - name: Extract Snapcast version
         id: get-version
         run: |
-          VERSION=$(docker run --rm tmpsnapclient:latest snapclient -v | awk 'NR==1 {print $2}' | sed 's/^v//')
-          echo "snapclient_version=$VERSION" >> "$GITHUB_ENV"
-          echo "snapclient Version: $VERSION"
+            VERSION=$(docker run --rm tmpsnapclient:latest snapclient -v | awk 'NR==1 {print $2}' | sed 's/^v//')
+            echo "snapclient_version=$VERSION" >> $GITHUB_ENV
+            echo "Snapclient Version: $VERSION"
 
-      - name: Build and push mr-do-snapclient (multi-arch)
+      - name: Build and push mr-do-snapclient
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: mr-do-snapclient/Dockerfile
+          file: 'mr-do-snapclient/Dockerfile'
           platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:latest
-            ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:${{ env.snapclient_version }}
+              ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:latest
+              ${{ secrets.DOCKER_USERNAME }}/mr-do-snapclient:${{ env.snapclient_version }}
