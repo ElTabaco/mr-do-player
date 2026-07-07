@@ -110,6 +110,12 @@ spec:
         - name: mr-do-snapserver
           image: riemerk/mr-do-snapserver:0.34.0
           imagePullPolicy: IfNotPresent
+          # snapserver uses $HOME/.config/snapserver for persistent settings.
+          # With runAsUser 1000 we point HOME at /home/snapserver so the
+          # volume mount can create the directory.
+          env:
+            - name: HOME
+              value: /home/snapserver
           ports:
             - containerPort: 1780
               name: webinterface
