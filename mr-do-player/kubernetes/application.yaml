@@ -19,7 +19,7 @@ spec:
     kustomize:
       # kustomization.yaml in path roots every resource by kind-suffixed name
       # (e.g. deployment.yaml, service.yaml). No patches / overlays today.
-      version: v1
+      version: v5.8.1
   destination:
     server: https://kubernetes.default.svc
     namespace: mr-do-player
