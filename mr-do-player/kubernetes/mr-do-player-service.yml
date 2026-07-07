@@ -3,44 +3,55 @@ kind: Service
 metadata:
   namespace: mr-do-player
   name: mr-do-player-service
+  labels:
+    app.kubernetes.io/name: mr-do-player
+    app.kubernetes.io/component: player
 spec:
   selector:
-    app: mr-do-player
-  type: ClusterIP
-#  type: LoadBalancer
-#  loadBalancerIP: 192.168.0.6
+    app.kubernetes.io/name: mr-do-player
+  type: LoadBalancer
+  loadBalancerIP: 192.168.0.20
+  externalTrafficPolicy: Local
+  # NOTE: With a single hostNetwork replica, the LB will have zero healthy
+  # endpoints during pod restarts/drain. 192.168.0.20 will briefly blackhole.
+  # This is acceptable for a homelab audio endpoint; if HA is needed later,
+  # run the snapserver as headless Service + active/passive failover.
   ports:
+    # --- UPnP / DLNA renderer (unicast HTTP control) ---
     - port: 49494
-      targetPort: 49494
+      targetPort: upnp-http
       protocol: TCP
       name: upnp-renderer
+    # --- SSDP discovery (1900/UDP, multicast 239.255.255.250) ---
+    # Multicast cannot be DNAT'd by MetalLB; discovery relies on hostNetwork.
+    # This port entry only fronts the unicast response path.
     - port: 1900
-      targetPort: 1900
+      targetPort: upnp-ssdp
       protocol: UDP
-      name: upnp-simple-service-discovry-protocol
-    # snapclien
+      name: upnp-ssdp
+    # --- Snapcast web UI ---
     - port: 1780
-      targetPort: 1780
+      targetPort: webinterface
       protocol: TCP
       name: webinterface
+    # --- Snapcast stream ---
     - port: 1704
-      targetPort: 1704
-      protocol: TCP
-      name: snapcast-control
-    - port: 1705
-      targetPort: 1705
+      targetPort: snapcast-stream
       protocol: TCP
       name: snapcast-stream
-    # libre
+    # --- Snapcast control ---
+    - port: 1705
+      targetPort: snapcast-control
+      protocol: TCP
+      name: snapcast-control
+    # --- librespot zeroconf (Spotify Connect) ---
     - port: 42661
-      targetPort: 42661
+      targetPort: librespot
       protocol: UDP
-      name: libre
-#    - port: 4070
-#      targetPort: 4070
-#      protocol: TCP
-#      name: app-port
+      name: librespot
+    # --- mDNS (5353/UDP, multicast 224.0.0.251) ---
+    # Multicast cannot be DNAT'd by MetalLB; discovery relies on hostNetwork.
     - port: 5353
-      targetPort: 5353
+      targetPort: mdns
       protocol: UDP
-      name: libred
+      name: mdns

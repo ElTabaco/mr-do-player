@@ -1,9 +1,14 @@
 #!/bin/bash
-SNAPCAST_VERSION=27
-ARCH=arm64
-echo ${SNAPCAST_VERSION}
+set -euo pipefail
 
-#docker image push --all-tags riemerk/mr-do-snapclient
-docker login -u "myusername" -p "mypassword" docker.io
-docker push riemerk/mr-do-snapclient:latest
-docker push riemerk/mr-do-snapclient:${SNAPCAST_VERSION}-ARCH=${ARCH}
+IMAGE="riemerk/mr-do-snapclient"
+
+if [[ -n "${DOCKER_USERNAME:-}" && -n "${DOCKER_PASSWORD:-}" ]]; then
+    echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+fi
+
+VERSION=$(docker run --rm "${IMAGE}:latest" snapclient -v 2>/dev/null | awk 'NR==1 {print $2}' | sed 's/^v//' || echo "dev")
+
+docker push "${IMAGE}:latest"
+docker push "${IMAGE}:${VERSION}"
+echo "Pushed ${IMAGE}:latest and ${IMAGE}:${VERSION}"

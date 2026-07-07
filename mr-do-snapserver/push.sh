@@ -1,9 +1,15 @@
 #!/bin/bash
-SNAPCAST_VERSION=26
-ARCH=arm64
-echo ${SNAPCAST_VERSION}
+set -euo pipefail
 
-#docker image push --all-tags riemerk/mr-do-snapserver
-docker login -u "myusername" -p "mypassword" docker.io
-docker push riemerk/mr-do-snapserver:latest
-docker push riemerk/mr-do-snapserver:${SNAPCAST_VERSION}-ARCH=${ARCH}
+IMAGE="riemerk/mr-do-snapserver"
+
+# Requires: docker login done beforehand (or DOCKER_USERNAME / DOCKER_PASSWORD env vars)
+if [[ -n "${DOCKER_USERNAME:-}" && -n "${DOCKER_PASSWORD:-}" ]]; then
+    echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+fi
+
+VERSION=$(docker run --rm "${IMAGE}:latest" snapserver -v 2>/dev/null | awk 'NR==1 {print $2}' | sed 's/^v//' || echo "dev")
+
+docker push "${IMAGE}:latest"
+docker push "${IMAGE}:${VERSION}"
+echo "Pushed ${IMAGE}:latest and ${IMAGE}:${VERSION}"

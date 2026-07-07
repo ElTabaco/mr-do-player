@@ -4,79 +4,180 @@ metadata:
   namespace: mr-do-player
   name: mr-do-player
   labels:
-    app: mr-do-player
+    app.kubernetes.io/name: mr-do-player
+    app.kubernetes.io/component: player
+    app.kubernetes.io/managed-by: argocd
 spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
-      app: mr-do-player
-  replicas: 1
+      app.kubernetes.io/name: mr-do-player
   template:
     metadata:
       labels:
-        app: mr-do-player
+        app.kubernetes.io/name: mr-do-player
+        app.kubernetes.io/component: player
     spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 60
       nodeSelector:
         cputype: amd64
+      # hostNetwork MUST stay: librespot (Spotify Connect) and UPnP/DLNA
+      # discover peers via mDNS multicast (5353/UDP) and SSDP (1900/UDP).
+      # MetalLB L2 DNATs unicast to the LB IP (192.168.0.20) but cannot
+      # forward multicast. With hostNetwork the pod binds directly on the
+      # node's LAN interface, so Spotify phones/clients can find it.
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      # Workaround for spotify
-      hostAliases:
-      - ip: "0.0.0.0"
-        hostnames:
-#            - "location.spoti.com"
-          - "apresolve.spotify.com"
-      # Workaround for spotify
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        # Create the named pipe before either main container opens it.
+        # ALSA's file plugin (gmediarender) writes, snapserver reads.
+        - name: init-fifo
+          image: busybox:1.36
+          command: ["sh", "-c", "umask 0 && rm -f /tmp/music/upnpfifo && mkfifo -m 0666 /tmp/music/upnpfifo"]
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
+          volumeMounts:
+            - name: shared-data
+              mountPath: /tmp/music
       containers:
         - name: mr-do-upnp
-          image: riemerk/mr-do-upnp:latest
+          image: riemerk/mr-do-upnp:0.1.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 49494
+              name: upnp-http
             - containerPort: 1900
+              name: upnp-ssdp
+              protocol: UDP
           env:
             - name: TZ
               value: Europe/Berlin
             - name: UPNP_NAME
               value: mrCast
+          livenessProbe:
+            tcpSocket:
+              port: upnp-http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: upnp-http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
           volumeMounts:
-            - name: mr-do-asound-cfgm
+            - name: asound-config
               mountPath: /etc/asound.conf
               subPath: asound.conf
               readOnly: true
-            - name: mr-do-snapserver-data
+            - name: shared-data
               mountPath: /tmp/music
+            - name: tmp
+              mountPath: /tmp
         - name: mr-do-snapserver
           image: riemerk/mr-do-snapserver:0.34.0
+          imagePullPolicy: IfNotPresent
           ports:
-            # snapclien
             - containerPort: 1780
+              name: webinterface
             - containerPort: 1704
+              name: snapcast-stream
             - containerPort: 1705
-            # libre
+              name: snapcast-control
+            # librespot zeroconf port (set via snapserver.conf params)
             - containerPort: 42661
-#            - containerPort: 4070
+              name: librespot
+              protocol: UDP
+            # mDNS for Spotify Connect device discovery (multicast, hostNetwork)
             - containerPort: 5353
+              name: mdns
+              protocol: UDP
           env:
             - name: TZ
               value: Europe/Berlin
+          startupProbe:
+            tcpSocket:
+              port: 1705
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 1705
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 1780
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
           volumeMounts:
-            - name: mr-do-player-data
+            # Requires /srv/nfs4/homes/mr/media/snapserver/ to exist on NFS
+            - name: player-data
               mountPath: /root/.config/snapserver
               subPath: snapserver
-            - name: mr-do-snapserver-cfgm
+            - name: snapserver-config
               mountPath: /etc/snapserver.conf
               subPath: snapserver.conf
               readOnly: true
-            - name: mr-do-snapserver-data
+            - name: shared-data
               mountPath: /tmp/music
+            - name: tmp
+              mountPath: /tmp
       volumes:
-        - name: mr-do-snapserver-data
+        - name: shared-data
           emptyDir: {}
-        - name: mr-do-player-data
+        - name: tmp
+          emptyDir: {}
+        - name: player-data
           persistentVolumeClaim:
             claimName: mr-do-player-pvc-data
-        - name: mr-do-asound-cfgm
+        - name: asound-config
           configMap:
             name: mr-do-asound-cfgmap
-        - name: mr-do-snapserver-cfgm
+        - name: snapserver-config
           configMap:
             name: mr-do-snapserver-cfgmap

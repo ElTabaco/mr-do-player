@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+
+# GitHub Actions
+.github
+
+# Documentation
+**/*.md
+LICENSE
+
+# Docker-compose / K8s manifests are not needed inside the image
+**/docker-compose.yml
+mr-do-player/kubernetes/
+
+# Shell scripts only used on the host
+**/build.sh
+**/push.sh
+**/apply.sh
+**/delete.sh
+
+# Local config / runtime artifacts
+mr-do-player/config/
+mr-do-player/tmp/
