@@ -108,7 +108,7 @@ spec:
             - name: tmp
               mountPath: /tmp
         - name: mr-do-snapserver
-          image: riemerk/mr-do-snapserver:0.34.0
+          image: riemerk/mr-do-snapserver:0.35.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 1780
