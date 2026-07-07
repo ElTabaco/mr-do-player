@@ -157,7 +157,7 @@ spec:
           volumeMounts:
             # Requires /srv/nfs4/homes/mr/media/snapserver/ to exist on NFS
             - name: player-data
-              mountPath: /root/.config/snapserver
+              mountPath: /home/snapserver/.config/snapserver
               subPath: snapserver
             - name: snapserver-config
               mountPath: /etc/snapserver.conf
