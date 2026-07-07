@@ -3,11 +3,10 @@ kind: Kustomization
 # Apply with: kubectl apply -k .
 # Or:        kubectl apply -f .  (kustomize direction argocd uses automatically)
 resources:
-  - application.yaml
-  - configmap-asound.yaml
-  - configmap-snapserver.yaml
-  - deployment.yaml
-  - persistentvolume.yaml
-  - persistentvolumeclaim.yaml
-  - poddisruptionbudget.yaml
-  - service.yaml
+  - app.yaml
+  - configmap.yaml
+  - deployment.yml
+  - pv.yml
+  - pvc.yml
+  - pdb.yml
+  - service.yml
