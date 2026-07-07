@@ -52,7 +52,7 @@ RUN apk add --no-cache \
         libstdc++ \
         libvorbis
 
-COPY --from=snapclient /root/snapcast/bin/snapclient /usr/local/bin/
+COPY --from=snapclient /snapcast/bin/snapclient /usr/local/bin/
 
 ENV DEVICE_NAME=mr-do-snapclient
 
