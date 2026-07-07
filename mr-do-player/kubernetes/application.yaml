@@ -39,16 +39,16 @@ spec:
       - ApplyOutOfSyncOnly=true
       - PruneLast=true
       - PrunePropagationPolicy=foreground
-    ignoreDifferences:
-      # ArgoCD fights runtime-assigned fields on LoadBalancer Services
-      - group: ""
-        kind: Service
-        name: mr-do-player-service
-        jsonPointers:
-          - /status
-          - /spec/clusterIP
-          - /spec/clusterIPs
-          - /spec/externalTrafficPolicy
-          - /spec/ipFamilyPolicy
-          - /spec/ipFamilies
-          - /spec/sessionAffinity
+  ignoreDifferences:
+    # ArgoCD fights runtime-assigned fields on LoadBalancer Services
+    - group: ""
+      kind: Service
+      name: mr-do-player-service
+      jsonPointers:
+        - /status
+        - /spec/clusterIP
+        - /spec/clusterIPs
+        - /spec/externalTrafficPolicy
+        - /spec/ipFamilyPolicy
+        - /spec/ipFamilies
+        - /spec/sessionAffinity
