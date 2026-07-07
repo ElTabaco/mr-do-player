@@ -1,10 +1,18 @@
-kubectl delete -f mr-do-player-deployment.yml
-kubectl delete -f mr-do-player-service.yml
-kubectl delete configmap mr-do-asound-cfgmap -n mr-do-player
-# kubectl delete configmap mr-do-kodi-cfgmap -n mr-do-player
-kubectl delete configmap mr-do-snapserver-cfgmap -n mr-do-player
-kubectl delete -f mr-do-player-pvc.yml
-kubectl delete -f mr-do-player-pv.yml
-# kubectl delete -f mr-do-player-ingress.yml
-# kubectl delete all,deployment,configmap,pv,pvc --all -n mr-do-player
-kubectl delete namespace mr-do-player
+#!/bin/bash
+# Delete in reverse order. Run from this directory.
+# Requires typed confirmation to prevent accidental removal.
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+read -r -p "Delete the entire mr-do-player deployment (namespace + PV)? Type 'yes' to confirm: " CONFIRM
+if [[ "$CONFIRM" != "yes" ]]; then
+    echo "Aborted."
+    exit 1
+fi
+
+# Delete every resource in this directory via Kustomize
+kubectl delete -k .
+
+# Force the namespace cleanup if anything remained
+kubectl delete namespace mr-do-player --ignore-not-found
