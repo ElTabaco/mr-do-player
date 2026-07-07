@@ -13,8 +13,11 @@ RUN apk add --no-cache \
 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
-# librespot-org/librespot has its own default branch (NOT snapcast)
-RUN git clone --depth 1 https://github.com/librespot-org/librespot.git && \
+# librespot-org/librespot 'dev' branch is the only maintained line
+# (master/main no longer tracked upstream). Override via --build-arg LIBRESPOT_VERSION=dev
+ARG LIBRESPOT_VERSION=dev
+RUN git clone --depth 1 --branch ${LIBRESPOT_VERSION} \
+        https://github.com/librespot-org/librespot.git && \
     cd librespot && \
     cargo build --release --no-default-features \
         --features "with-libmdns,rustls-tls-native-roots"
