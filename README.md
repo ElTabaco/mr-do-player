@@ -40,25 +40,14 @@
 
 [![docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-snapclient)](https://hub.docker.com/r/riemerk/mr-do-snapclient)
 
-## UPnP / dlna
+## UPnP / DLNA (mr-do-upnp-c)
 
-[![CI](https://github.com/ElTabaco/mr-do-player/actions/workflows/docker-image-upnp.yml/badge.svg)](https://hub.docker.com/r/riemerk/mr-do-upnp)
-[![docker image size](https://img.shields.io/docker/v/riemerk/mr-do-upnp/latest?arch=arm64)](https://hub.docker.com/r/riemerk/mr-do-upnp)
-### ARM64
+> Moved to its own repo: [ElTabaco/mr-do-upnp-c](https://github.com/ElTabaco/mr-do-upnp-c)
 
-[![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-upnp/latest?arch=arm64)](https://hub.docker.com/r/riemerk/mr-do-upnp)
+[![CI](https://github.com/ElTabaco/mr-do-upnp-c/actions/workflows/docker-image-upnp-c.yml/badge.svg)](https://hub.docker.com/r/riemerk/mr-do-upnp-c)
+[![docker image size](https://img.shields.io/docker/v/riemerk/mr-do-upnp-c/latest?arch=amd64)](https://hub.docker.com/r/riemerk/mr-do-upnp-c)
 
-### ARM32
+[![docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-upnp-c)](https://hub.docker.com/r/riemerk/mr-do-upnp-c)
 
-[![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-upnp/latest?arch=arm)](https://hub.docker.com/r/riemerk/mr-do-upnp)
-
-### AMD64
-
-[![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-upnp/latest?arch=amd64)](https://hub.docker.com/r/riemerk/mr-do-upnp)
-
-### Docker pulls
-
-[![docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-upnp)](https://hub.docker.com/r/riemerk/mr-do-upnp)
-   
 ## Main credits: 
 [Snapcast](https://github.com/badaix/snapcast) from badaix
