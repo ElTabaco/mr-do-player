@@ -1,36 +1,38 @@
 services:
     mr-do-upnp:
-        image: riemerk/mr-do-upnp:latest
-        container_name: mr-do-upnp
+        image: riemerk/mr-do-upnp-c:latest
+        container_name: mr-do-upnp-c
         environment:
-            - PUID=1000
-            - PGID=1000
-            - DEVICE_NAME=mrUPnP
             - TZ=Europe/Berlin
-        ports:
-        - 49494:49494 
-        - 1900:1900
+            - UPNP_NAME=mrUPnP
         network_mode: host
         volumes:
         - ./etc/asound.conf:/etc/asound.conf
         - ./tmp/music/:/tmp/music
-        hostname: myUPnP
+        depends_on:
+            init-fifo:
+                condition: service_completed_successfully
         restart: unless-stopped
+
+    init-fifo:
+        image: busybox:1.36
+        container_name: mr-do-fifo
+        command: ["sh", "-c", "umask 0 && rm -f /tmp/music/upnpfifo && mkfifo -m 0666 /tmp/music/upnpfifo"]
+        volumes:
+        - ./tmp/music:/tmp/music
+        restart: "no"
+
     mr-do-snapserver:
         image: riemerk/mr-do-snapserver:latest
         container_name: mr-do-snapserver
         environment:
-            - PUID=1000
-            - PGID=1000
-            - DEVICE_NAME=Snapserver
             - TZ=Europe/Berlin
         volumes:
             - ./etc/snapserver.conf:/etc/snapserver.conf
             - ./config/snapserver/:/root/.config/snapserver/
             - ./tmp/music/:/tmp/music
-        ports:
-            - 1704:1704
-            - 1705:1705
-            - 1780:1780
         network_mode: host
+        depends_on:
+            init-fifo:
+                condition: service_completed_successfully
         restart: unless-stopped
