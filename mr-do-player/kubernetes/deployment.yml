@@ -65,7 +65,7 @@ spec:
         - name: mr-do-upnp
           # gmediarender UPnP/DLNA MediaRenderer (310MB, replaces 659MB Kodi).
           # Purpose-built headless renderer — no X11, no GL, no skin.
-          image: riemerk/mr-do-upnp-c:1.0.0
+          image: riemerk/mr-do-upnp-c:1.1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 49494
