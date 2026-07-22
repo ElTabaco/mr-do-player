@@ -95,7 +95,7 @@ spec:
               command:
                 - sh
                 - -c
-                - pgrep -f kodi-x11 >/dev/null
+                - test -f /tmp/kodi-home/.kodi/temp/kodi.log
             periodSeconds: 30
           readinessProbe:
             exec:
