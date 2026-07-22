@@ -64,7 +64,6 @@ spec:
       containers:
         - name: mr-do-upnp
           # Kodi/XBMC v21.3 headless UPnP/DLNA MediaRenderer (from mr-do-upnp-c).
-          # Replaces the old gmediarender image (riemerk/mr-do-upnp).
           # Kodi uses xbmc/xbmc's own UPnP stack for max compatibility.
           image: riemerk/mr-do-upnp-c:0.2.0
           imagePullPolicy: Always
