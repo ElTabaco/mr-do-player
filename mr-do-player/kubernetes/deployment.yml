@@ -41,7 +41,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         # Create the named pipe before either main container opens it.
-        # ALSA's file plugin (gmediarender) writes, snapserver reads.
+        # ALSA's file plugin (Kodi PAPlayer) writes, snapserver reads.
         - name: init-fifo
           image: busybox:1.36
           command: ["sh", "-c", "umask 0 && rm -f /tmp/music/upnpfifo && mkfifo -m 0666 /tmp/music/upnpfifo"]
@@ -63,7 +63,10 @@ spec:
               mountPath: /tmp/music
       containers:
         - name: mr-do-upnp
-          image: riemerk/mr-do-upnp:0.1.0
+          # Kodi/XBMC v21.3 headless UPnP/DLNA MediaRenderer (from mr-do-upnp-c).
+          # Replaces the old gmediarender image (riemerk/mr-do-upnp).
+          # Kodi uses xbmc/xbmc's own UPnP stack for max compatibility.
+          image: riemerk/mr-do-upnp-c:0.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 49494
@@ -76,10 +79,16 @@ spec:
               value: Europe/Berlin
             - name: UPNP_NAME
               value: mrCast
+          # Kodi takes ~20s to boot (Xvfb + GL init + skin load + UPnP start).
+          # Use a generous startup probe so K8s doesn't kill it before it's ready.
+          startupProbe:
+            tcpSocket:
+              port: upnp-http
+            failureThreshold: 30
+            periodSeconds: 5
           livenessProbe:
             tcpSocket:
               port: upnp-http
-            initialDelaySeconds: 10
             periodSeconds: 30
           readinessProbe:
             tcpSocket:
@@ -87,12 +96,14 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:
+            # Kodi headless (Xvfb + llvmpipe GL + PAPlayer) needs more than
+            # gmediarender did.  256Mi is the working set after boot.
             requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              cpu: 500m
+              cpu: 100m
               memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
