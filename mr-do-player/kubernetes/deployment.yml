@@ -63,9 +63,9 @@ spec:
               mountPath: /tmp/music
       containers:
         - name: mr-do-upnp
-          # Kodi/XBMC v21.3 headless UPnP/DLNA MediaRenderer (from mr-do-upnp-c).
-          # Kodi uses xbmc/xbmc's own UPnP stack for max compatibility.
-          image: riemerk/mr-do-upnp-c:0.3.0
+          # gmediarender UPnP/DLNA MediaRenderer (310MB, replaces 659MB Kodi).
+          # Purpose-built headless renderer — no X11, no GL, no skin.
+          image: riemerk/mr-do-upnp-c:1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 49494
@@ -78,39 +78,26 @@ spec:
               value: Europe/Berlin
             - name: UPNP_NAME
               value: mrCast
-          # Kodi takes ~20-30s to boot (Xvfb + GL init + skin load + UPnP).
-          # The UPnP HTTP port is dynamically assigned by Kodi's Platinum stack,
-          # so we can't probe a fixed TCP port.  Use an exec probe that checks
-          # the kodi.log for "starting upnp renderer" instead.
+          # gmediarender boots in ~2s and binds port 49494 reliably.
           startupProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - grep -q "starting upnp renderer" /tmp/kodi-home/.kodi/temp/kodi.log
-            failureThreshold: 30
-            periodSeconds: 5
+            tcpSocket:
+              port: upnp-http
+            failureThreshold: 10
+            periodSeconds: 3
           livenessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - test -f /tmp/kodi-home/.kodi/temp/kodi.log
+            tcpSocket:
+              port: upnp-http
             periodSeconds: 30
           readinessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - grep -q "starting upnp renderer" /tmp/kodi-home/.kodi/temp/kodi.log
-            initialDelaySeconds: 5
+            tcpSocket:
+              port: upnp-http
+            initialDelaySeconds: 3
             periodSeconds: 10
           resources:
-            # Kodi headless (Xvfb + llvmpipe GL + PAPlayer) needs more than
-            # gmediarender did.  256Mi is the working set after boot.
+            # gmediarender is lightweight (no X11/GL like Kodi).
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 50m
+              memory: 64Mi
             limits:
               cpu: 1000m
               memory: 512Mi
