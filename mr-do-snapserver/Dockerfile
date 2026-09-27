@@ -48,7 +48,7 @@ RUN apk add --no-cache \
         openssl-dev
 
 RUN git clone --recursive --depth 1 --branch ${SNAPCAST_VERSION} \
-        https://github.com/badaix/snapcast.git && \
+        https://github.com/snapcast/snapcast.git && \
     cd snapcast && \
     cmake -S . -B build \
         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
@@ -61,9 +61,10 @@ RUN git clone --recursive --depth 1 --branch ${SNAPCAST_VERSION} \
 # Stage 3: fetch snapweb UI
 # ============================================================
 FROM alpine:latest AS snapweb
+ARG SNAPWEB_VERSION=v0.9.3
 
 RUN apk add --no-cache wget unzip && \
-    wget -q https://github.com/badaix/snapweb/releases/download/v0.9.1/snapweb.zip && \
+    wget -q https://github.com/snapcast/snapweb/releases/download/${SNAPWEB_VERSION}/snapweb.zip && \
     mkdir -p /usr/share/snapserver/snapweb/ && \
     unzip -d /usr/share/snapserver/snapweb/ snapweb.zip
 

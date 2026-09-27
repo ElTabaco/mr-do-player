@@ -52,6 +52,11 @@ jobs:
           VERSION=$(docker run --rm tmpsnapserver:latest snapserver -v | awk 'NR==1 {print $2}' | sed 's/^v//')
           echo "snapserver_version=$VERSION" >> $GITHUB_ENV
           echo "snapserver Version: $VERSION"
+          # librespot --version -> "librespot 0.8.0 939dc5e (Built on ...)"
+          LS=$(docker run --rm --entrypoint librespot tmpsnapserver:latest --version | awk 'NR==1 {print $2"-"$3}')
+          IMAGE_TAG="${VERSION}-librespot${LS}"
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "Image tag: $IMAGE_TAG"
 
       - name: Build and push mr-do-snapserver
         uses: docker/build-push-action@v4
@@ -62,4 +67,4 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/mr-do-snapserver:latest
-            ${{ secrets.DOCKER_USERNAME }}/mr-do-snapserver:${{ env.snapserver_version }}
+            ${{ secrets.DOCKER_USERNAME }}/mr-do-snapserver:${{ env.image_tag }}
