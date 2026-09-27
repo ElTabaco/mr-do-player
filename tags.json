@@ -1,0 +1,52 @@
+[
+  {
+    "name": "v0.8.0",
+    "zipball_url": "https://api.github.com/repos/librespot-org/librespot/zipball/refs/tags/v0.8.0",
+    "tarball_url": "https://api.github.com/repos/librespot-org/librespot/tarball/refs/tags/v0.8.0",
+    "commit": {
+      "sha": "d36f9f1907e8cc9d68a93f8ebc6b627b1bf7267d",
+      "url": "https://api.github.com/repos/librespot-org/librespot/commits/d36f9f1907e8cc9d68a93f8ebc6b627b1bf7267d"
+    },
+    "node_id": "MDM6UmVmMTEwNzU5Nzk2OnJlZnMvdGFncy92MC44LjA="
+  },
+  {
+    "name": "v0.7.1",
+    "zipball_url": "https://api.github.com/repos/librespot-org/librespot/zipball/refs/tags/v0.7.1",
+    "tarball_url": "https://api.github.com/repos/librespot-org/librespot/tarball/refs/tags/v0.7.1",
+    "commit": {
+      "sha": "987dfa5df2546a96d34582674a757a3dcc6036a7",
+      "url": "https://api.github.com/repos/librespot-org/librespot/commits/987dfa5df2546a96d34582674a757a3dcc6036a7"
+    },
+    "node_id": "MDM6UmVmMTEwNzU5Nzk2OnJlZnMvdGFncy92MC43LjE="
+  },
+  {
+    "name": "v0.7.0",
+    "zipball_url": "https://api.github.com/repos/librespot-org/librespot/zipball/refs/tags/v0.7.0",
+    "tarball_url": "https://api.github.com/repos/librespot-org/librespot/tarball/refs/tags/v0.7.0",
+    "commit": {
+      "sha": "dd8005183dfd29d6b7c6cb2dc9219cbdd0d03d8c",
+      "url": "https://api.github.com/repos/librespot-org/librespot/commits/dd8005183dfd29d6b7c6cb2dc9219cbdd0d03d8c"
+    },
+    "node_id": "MDM6UmVmMTEwNzU5Nzk2OnJlZnMvdGFncy92MC43LjA="
+  },
+  {
+    "name": "v0.6.0",
+    "zipball_url": "https://api.github.com/repos/librespot-org/librespot/zipball/refs/tags/v0.6.0",
+    "tarball_url": "https://api.github.com/repos/librespot-org/librespot/tarball/refs/tags/v0.6.0",
+    "commit": {
+      "sha": "383a6f6969f23b3e3cbc693747101cb9c92463dc",
+      "url": "https://api.github.com/repos/librespot-org/librespot/commits/383a6f6969f23b3e3cbc693747101cb9c92463dc"
+    },
+    "node_id": "MDM6UmVmMTEwNzU5Nzk2OnJlZnMvdGFncy92MC42LjA="
+  },
+  {
+    "name": "v0.5.0",
+    "zipball_url": "https://api.github.com/repos/librespot-org/librespot/zipball/refs/tags/v0.5.0",
+    "tarball_url": "https://api.github.com/repos/librespot-org/librespot/tarball/refs/tags/v0.5.0",
+    "commit": {
+      "sha": "84d28e887b0c9b8e07dcbf890a17cdfe7f3cd8d1",
+      "url": "https://api.github.com/repos/librespot-org/librespot/commits/84d28e887b0c9b8e07dcbf890a17cdfe7f3cd8d1"
+    },
+    "node_id": "MDM6UmVmMTEwNzU5Nzk2OnJlZnMvdGFncy92MC41LjA="
+  }
+]
