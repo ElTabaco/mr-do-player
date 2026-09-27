@@ -141,14 +141,17 @@ spec:
             # volume mount can create the directory.
             - name: HOME
               value: /home/snapserver
+          # Probe the HTTP port (1780), not the TCP control port (1705): a bare TCP
+          # connect/close on 1705 makes snapserver log
+          # "[Error] (ControlSessionTCP) Error while reading from control socket".
           startupProbe:
             tcpSocket:
-              port: 1705
+              port: 1780
             failureThreshold: 30
             periodSeconds: 5
           livenessProbe:
             tcpSocket:
-              port: 1705
+              port: 1780
             periodSeconds: 30
           readinessProbe:
             tcpSocket:
