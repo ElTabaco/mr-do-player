@@ -76,12 +76,15 @@ spec:
               value: Europe/Berlin
             - name: SOLOIST_UPDATE_INTERVAL
               value: "86400"
+          # Waits inside the probe (every 0.5 s, up to 8 s) instead of failing while a new
+          # Soloist build downloads; each failed attempt would log an Unhealthy Warning event.
+          # 36 x 10 s = 6 min for the first download (~13 MB).
           startupProbe:
             exec:
-              command: ["test", "-f", "/tmp/soloist-fetch.ready"]
-            periodSeconds: 2
-            timeoutSeconds: 1
-            failureThreshold: 180
+              command: ["sh", "-c", "for i in $(seq 1 16); do test -f /tmp/soloist-fetch.ready && exit 0; sleep 0.5; done; exit 1"]
+            periodSeconds: 10
+            timeoutSeconds: 9
+            failureThreshold: 36
           resources:
             requests:
               cpu: 5m
