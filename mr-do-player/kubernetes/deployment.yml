@@ -68,7 +68,7 @@ spec:
         # never reads EOF on the Spotify stream. The Soloist binary is downloaded from
         # Spotify's CDN at start and cached with the login in the NFS volume (subPath soloist).
         - name: mr-do-soloist
-          image: riemerk/mr-do-soloist:@SOLOIST_TAG@
+          image: riemerk/mr-do-soloist:17.0-7c98522
           imagePullPolicy: IfNotPresent
           restartPolicy: Always
           env:
@@ -177,7 +177,7 @@ spec:
             - name: tmp
               mountPath: /tmp
         - name: mr-do-snapserver
-          image: riemerk/mr-do-snapserver:0.35.0-librespot0.8.0-939dc5e
+          image: riemerk/mr-do-snapserver:0.35.0-4fed179
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 1780
