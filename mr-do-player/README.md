@@ -55,7 +55,7 @@ See docker compose file
 | `SOLOIST_UPDATE_INTERVAL` | `86400` (check the CDN once a day; download only when newer) |
 | `/data` | same PVC/subPath as `mr-do-soloist` |
 | `/tmp` | emptyDir `medium: Memory`, `sizeLimit: 1Mi` (ready file) |
-| Probes | startup: `test -f /tmp/soloist-fetch.ready` every 2 s, `failureThreshold: 180` (6 min; the first download is ~13 MB) |
+| Probes | startup: `test -f /tmp/soloist-fetch.ready` retried every 0.5 s inside the probe for up to 8 s (`periodSeconds: 10`, `timeoutSeconds: 9`, `failureThreshold: 36` = 6 min; the first download is ~13 MB). Waiting inside the probe avoids an `Unhealthy` Warning event while a new Soloist build downloads |
 | Resources | requests `5m` / `16Mi`, limits `500m` / `64Mi` |
 | Security | uid/gid `1000`, read-only root, `drop: ALL`, no privilege escalation |
 | Outbound | HTTPS `soloist-builds.spotifycdn.com` |
