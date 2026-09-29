@@ -1,0 +1,8 @@
+# PulseAudio startup script for mr-do-soloist (rendered by entrypoint.sh)
+#   @SOCKET@  native protocol socket (container-local, PULSE_SERVER points here)
+#   @FIFO@    named pipe read by snapserver (pipe:// stream)
+#   @RATE@    sample rate written to the FIFO; must match snapserver's sampleformat
+.fail
+load-module module-native-protocol-unix auth-anonymous=1 auth-cookie-enabled=0 socket=@SOCKET@
+load-module module-pipe-sink file=@FIFO@ sink_name=snapfifo format=s16le rate=@RATE@ channels=2 use_system_clock_for_timing=yes
+set-default-sink snapfifo

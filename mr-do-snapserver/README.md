@@ -3,7 +3,9 @@
 [![Build Images](https://github.com/riemerk/mr-do-snapserver/actions/workflows/actions.yml/badge.svg?branch=master)](https://github.com/riemerk/mr-do-snapserver/actions/workflows/actions.yml)
 
 
-Run a [Snapcast](https://github.com/snapcast/snapcast) server with [Spotify support](https://github.com/librespot-org/librespot) as a Docker container.
+Run a [Snapcast](https://github.com/snapcast/snapcast) server as a Docker container.
+Spotify Connect is provided by the separate [mr-do-soloist](../mr-do-soloist/README.md) container
+(Spotify Soloist -> PulseAudio pipe sink -> FIFO), read by snapserver as a `pipe://` stream.
 
 Free to everyone bring your changes with a branch to all like to improve.
 
@@ -26,17 +28,16 @@ _Note: You need a Spotify premium account._
 | Build arg | Default | Source |
 |---|---|---|
 | `SNAPCAST_VERSION` | `develop` | branch/tag of https://github.com/snapcast/snapcast (badaix releases from `develop`) |
-| `LIBRESPOT_VERSION` | `dev` | branch/tag of https://github.com/librespot-org/librespot (`dev` is the maintained line) |
 | `SNAPWEB_VERSION` | `v0.9.3` | release tag of https://github.com/snapcast/snapweb (`snapweb.zip` asset) |
 
-librespot is built with `--no-default-features --features "with-libmdns,rustls-tls-native-roots"`.
+The cloned snapcast commit is stored in the image as `/usr/share/snapserver/snapcast-commit`.
 
 ### Image tags
 
 | Tag | Meaning |
 |---|---|
 | `latest` | most recent build |
-| `<snapserver>-librespot<version>-<commit>` | unique per build, e.g. `0.35.0-librespot0.8.0-939dc5e` (from `snapserver -v` and `librespot --version`) |
+| `<snapserver>-<snapcast commit>` | unique per build, e.g. `0.35.0-4fed179` (from `snapserver -v` and `/usr/share/snapserver/snapcast-commit`) |
 
 The Kubernetes deployment uses `imagePullPolicy: IfNotPresent`, so it must reference the
 unique tag; reusing a tag leaves the node on its cached image. `build.sh`, `push.sh` and the
@@ -50,6 +51,15 @@ docker build -t riemer/mr-do-snapserver --build-arg ARCH=arm64 .
 
 ## Configuration:
 * See docker compose file
+
+| Item | Value |
+|---|---|
+| Ports | `1704/tcp` stream, `1705/tcp` control (JSON-RPC), `1780/tcp` HTTP + snapweb UI |
+| Config file | `/etc/snapserver.conf` (example: `etc/snapserver.conf`) |
+| Persistent state | `$HOME/.config/snapserver/server.json` (Kubernetes: `HOME=/home/snapserver`, NFS subPath `snapserver`) |
+| snapweb | `/usr/share/snapserver/snapweb` (`[http] doc_root`) |
+| `DEVICE_NAME` env | `mr-do-snapserver` |
+| Spotify | `pipe:///tmp/music/spotifyfifo?name=mrSpot&sampleformat=48000:16:2&mode=read&idle_threshold=2000` (written by mr-do-soloist) |
 
 ## Run:
 ```console
@@ -73,4 +83,4 @@ All reused code from main creators is linked direkt in Doker file.
 ### Credits
 * [DockerSnapclient](https://github.com/Saiyato/snapclient_docker)
 * [DockerSnapcast](https://github.com/Saiyato/snapserver_docker)
-* [librespot](https://github.com/librespot-org/librespot)
+* [Spotify Soloist](https://developer.spotify.com/documentation/soloist) (mr-do-soloist)
