@@ -40,7 +40,7 @@ See docker compose file
 | `/data` | PVC `mr-do-player-pvc-data`, subPath `soloist` (NFS `mr0.local:/srv/nfs4/homes/mr/media/soloist`): Soloist binary + stored login |
 | `/cache` | emptyDir, `sizeLimit: 512Mi` |
 | `/run/soloist` | emptyDir `medium: Memory`, `sizeLimit: 16Mi` |
-| Probes | startup: `healthcheck.sh` retried every 0.5 s inside the probe for up to 50 s (`periodSeconds: 60`, `timeoutSeconds: 55`, `failureThreshold: 6` = 6 min; the first start downloads ~13 MB). Waiting inside the probe avoids an `Unhealthy` Warning event during the download. Liveness: `healthcheck.sh` every 30 s |
+| Probes | startup: `healthcheck.sh` retried every 0.5 s inside the probe for up to 8 s (`periodSeconds: 10`, `timeoutSeconds: 9`, `failureThreshold: 36` = 6 min; the first start downloads ~13 MB). Waiting inside the probe avoids an `Unhealthy` Warning event during the download; the short period keeps pod start fast (the first probe waits one period). Liveness: `healthcheck.sh` every 30 s |
 | Resources | requests `50m` / `96Mi`, limits `1000m` / `512Mi` |
 | Security | uid/gid `1000`, read-only root, `drop: ALL`, no privilege escalation |
 | Network | `hostNetwork: true` (mDNS 5353/UDP + Soloist's ZeroConf HTTP port); no Service port |
