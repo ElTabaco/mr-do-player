@@ -26,7 +26,26 @@ listeners can then connect with any Spotify account (Free or Premium).
      ```
    - docker compose: `SOLOIST_API_KEY=...` in `mr-do-player/docker/.env` (git-ignored).
 5. In the Spotify app select the device **mrSpot** and play. Soloist stores the Spotify Connect
-   login in `/data`; it survives restarts.
+   login in `/data` (`/data/cache/dbrts`); it survives restarts.
+
+### Login fails: `login failed: make sure --api-key is valid`
+
+The phone finds the device, but Spotify rejects the login. With `SOLOIST_VERBOSE=true` the log shows
+`Access denied from backend` / `Auth code grant failed, error: session_access_denied`.
+Seen with a key generated on an account that had **no app** in the developer dashboard. Fix:
+
+1. https://developer.spotify.com/dashboard → **Create app** (any name, Redirect URI
+   `http://127.0.0.1:8888/callback`, tick *Web API*, accept the terms, save).
+2. https://developer.spotify.com/dashboard/soloist → generate a **new** key (the old one becomes invalid).
+3. Replace the Secret and restart the pod:
+   ```console
+   read -rsp "Soloist API key: " K; echo; kubectl -n mr-do-player create secret generic mr-do-soloist --from-literal=SOLOIST_API_KEY="$K" --dry-run=client -o yaml | kubectl apply -f -; unset K
+   kubectl -n mr-do-player rollout restart deploy/mr-do-player
+   ```
+4. Select **mrSpot** in the Spotify app again. The log then shows `logged in as <user>` and `became active device`.
+
+Follow-up retries in the same attempt log `session_auth_info_not_found`; that is only a consequence
+of the first refusal.
 
 ## Soloist binary: downloaded, not in the image
 
