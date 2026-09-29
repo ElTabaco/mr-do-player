@@ -20,8 +20,12 @@ See docker compose file
 | startup/liveness probe | `tcpSocket` port `1780` (HTTP) | A bare TCP connect/close on the control port `1705` makes snapserver log `[Error] (ControlSessionTCP) Error while reading from control socket: End of file` every probe. |
 | readiness probe | `tcpSocket` port `1780` | unchanged |
 
-| Spotify stream `mrSpot` | `pipe:///tmp/music/spotifyfifo?name=mrSpot&sampleformat=48000:16:2&mode=read&idle_threshold=2000` | Written by the `mr-do-soloist` sidecar (PulseAudio pipe sink, s16le 48 kHz stereo). `idle_threshold=2000`: PulseAudio writes silence when nothing plays; after 2 s the stream is idle and `mrMusic` falls back to `upnp`. |
+| Spotify stream `mrSpot` | `pipe:///tmp/music/spotifyfifo?name=mrSpot&sampleformat=44100:16:2&mode=read&idle_threshold=2000` | Written by the `mr-do-soloist` sidecar (PulseAudio pipe sink, s16le 44.1 kHz stereo). `idle_threshold=2000`: PulseAudio writes silence when nothing plays; after 2 s the stream is idle and `mrMusic` falls back to `upnp`. |
 | Meta stream `mrMusic` | `meta:///mrSpot/upnp` | Plays Spotify when active, otherwise UPnP. |
+| UPnP stream `upnp` | `pipe:///tmp/music/upnpfifo?name=upnp&sampleformat=44100:16:2` | Written by gmediarender through the ALSA `rate` + `file` plugins (`mr-do-asound-cfgmap`, 44100 Hz S16_LE). |
+| `sampleformat` | `44100:16:2` | Spotify and most music files are 44.1 kHz: PulseAudio (Spotify) and ALSA (UPnP, 44.1 kHz files) pass them through bit-exact. Files with other rates (e.g. 48/96 kHz) are converted by ALSA's built-in linear converter. Clients resample (soxr) only if their DAC does not support 44.1 kHz. With 48000 every Spotify track and every CD-quality file was resampled. `SAMPLE_RATE` of mr-do-soloist and `rate` in `asound.conf` must match. |
+| `codec` | `flac` | lossless transport |
+| `buffer` | `1500` ms | end-to-end latency; default 1000. More headroom against Wi-Fi dropouts on the clients (Pi Zero/armv6l). |
 
 ## Kubernetes: pod layout (`kubernetes/deployment.yml`)
 
@@ -37,7 +41,7 @@ See docker compose file
 |---|---|
 | Secret | `mr-do-soloist`, key `SOLOIST_API_KEY` (namespace `mr-do-player`, created manually, never in git; how to: [mr-do-soloist README](../mr-do-soloist/README.md#soloist-api-key)) |
 | `SOLOIST_DEVICE_NAME` | `mrSpot` |
-| `SOLOIST_CACHE_SIZE_MB` / `SOLOIST_INITIAL_VOLUME` / `SAMPLE_RATE` | `300` / `100` / `48000` |
+| `SOLOIST_CACHE_SIZE_MB` / `SOLOIST_INITIAL_VOLUME` / `SAMPLE_RATE` | `300` / `100` / `44100` (= snapserver `sampleformat`; Spotify's native rate, no resampling) |
 | `/data` | PVC `mr-do-player-pvc-data`, subPath `soloist` (NFS `mr0.local:/srv/nfs4/homes/mr/media/soloist`): Soloist binary + stored login; shared with `mr-do-soloist-fetch` |
 | `/cache` | emptyDir, `sizeLimit: 512Mi` |
 | `/run/soloist` | emptyDir `medium: Memory`, `sizeLimit: 16Mi` |

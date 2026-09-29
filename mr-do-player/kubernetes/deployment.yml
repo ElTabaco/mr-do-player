@@ -123,9 +123,9 @@ spec:
               value: "300"
             - name: SOLOIST_INITIAL_VOLUME
               value: "100"
-            # PulseAudio resamples Spotify's 44.1 kHz to 48 kHz = snapserver's stream format
+            # = snapserver's stream format; Spotify decodes at 44.1 kHz, so PulseAudio does not resample
             - name: SAMPLE_RATE
-              value: "48000"
+              value: "44100"
           # The startup probe waits inside the probe (up to 8 s) instead of failing while
           # the Soloist binary is still downloading; each failed attempt would otherwise
           # create an "Unhealthy" Warning event. Keep periodSeconds short: the kubelet's
