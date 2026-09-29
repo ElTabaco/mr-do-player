@@ -5,6 +5,8 @@ services:
         environment:
             - TZ=Europe/Berlin
             - UPNP_NAME=mrUPnP
+            - SAMPLE_RATE=44100
+            - RESAMPLE_QUALITY=10
         network_mode: host
         volumes:
         - ./etc/asound.conf:/etc/asound.conf

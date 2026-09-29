@@ -169,8 +169,9 @@ spec:
         - name: mr-do-upnp
           # gmediarender UPnP/DLNA MediaRenderer (310MB, replaces 659MB Kodi).
           # Purpose-built headless renderer — no X11, no GL, no skin.
-          image: riemerk/mr-do-upnp-c:1.1.0
-          imagePullPolicy: Always
+          # 2acefbd = mr-do-upnp-c PR #9 (GStreamer high-quality resampler)
+          image: riemerk/mr-do-upnp-c:2acefbd
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 49494
               name: upnp-http
@@ -182,6 +183,13 @@ spec:
               value: Europe/Berlin
             - name: UPNP_NAME
               value: mrCast
+            # Output rate = snapserver sampleformat = rate in asound.conf. Files at other rates
+            # are resampled by GStreamer audioresample (windowed sinc) before ALSA.
+            - name: SAMPLE_RATE
+              value: "44100"
+            # GStreamer audioresample quality 0-10 (GStreamer default 4)
+            - name: RESAMPLE_QUALITY
+              value: "10"
           # gmediarender boots in ~2s and binds port 49494 reliably.
           startupProbe:
             tcpSocket:

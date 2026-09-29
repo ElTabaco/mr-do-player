@@ -22,8 +22,8 @@ See docker compose file
 
 | Spotify stream `mrSpot` | `pipe:///tmp/music/spotifyfifo?name=mrSpot&sampleformat=44100:16:2&mode=read&idle_threshold=2000` | Written by the `mr-do-soloist` sidecar (PulseAudio pipe sink, s16le 44.1 kHz stereo). `idle_threshold=2000`: PulseAudio writes silence when nothing plays; after 2 s the stream is idle and `mrMusic` falls back to `upnp`. |
 | Meta stream `mrMusic` | `meta:///mrSpot/upnp` | Plays Spotify when active, otherwise UPnP. |
-| UPnP stream `upnp` | `pipe:///tmp/music/upnpfifo?name=upnp&sampleformat=44100:16:2` | Written by gmediarender through the ALSA `rate` + `file` plugins (`mr-do-asound-cfgmap`, 44100 Hz S16_LE). |
-| `sampleformat` | `44100:16:2` | Spotify and most music files are 44.1 kHz: PulseAudio (Spotify) and ALSA (UPnP, 44.1 kHz files) pass them through bit-exact. Files with other rates (e.g. 48/96 kHz) are converted by ALSA's built-in linear converter. Clients resample (soxr) only if their DAC does not support 44.1 kHz. With 48000 every Spotify track and every CD-quality file was resampled. `SAMPLE_RATE` of mr-do-soloist and `rate` in `asound.conf` must match. |
+| UPnP stream `upnp` | `pipe:///tmp/music/upnpfifo?name=upnp&sampleformat=44100:16:2` | Written by gmediarender through the ALSA `rate` + `file` plugins (`mr-do-asound-cfgmap`, 44100 Hz S16_LE). Files at other rates are resampled by GStreamer `audioresample quality=10` inside mr-do-upnp-c (`SAMPLE_RATE=44100`, `RESAMPLE_QUALITY=10`); measured 79 dB SNR at 15 kHz for 48 kHz files, ALSA's linear converter gave 13 dB. |
+| `sampleformat` | `44100:16:2` | Spotify and most music files are 44.1 kHz: PulseAudio (Spotify) and ALSA (UPnP, 44.1 kHz files) pass them through bit-exact. Files with other rates (e.g. 48/96 kHz) are resampled by GStreamer `audioresample` (windowed sinc) in mr-do-upnp-c. Clients resample (soxr) only if their DAC does not support 44.1 kHz. With 48000 every Spotify track and every CD-quality file was resampled. `SAMPLE_RATE` of mr-do-soloist and `rate` in `asound.conf` must match. |
 | `codec` | `flac` | lossless transport |
 | `buffer` | `1500` ms | end-to-end latency; default 1000. More headroom against Wi-Fi dropouts on the clients (Pi Zero/armv6l). |
 
@@ -34,7 +34,7 @@ See docker compose file
 | `init-fifo` | init container | `busybox:1.36` | creates `/tmp/music/upnpfifo` and `/tmp/music/spotifyfifo` (mode 0666) |
 | `mr-do-soloist-fetch` | native sidecar (`initContainers`, `restartPolicy: Always`) | `riemerk/mr-do-soloist:<pa>-<tree>-fetch` | downloads the Soloist binary into `/data/bin` (NFS) before `mr-do-soloist` starts, then checks for a newer build once a day |
 | `mr-do-soloist` | native sidecar (`initContainers`, `restartPolicy: Always`) | `riemerk/mr-do-soloist:<pa>-<tree>` | Spotify Connect device `mrSpot` → PulseAudio pipe sink → `spotifyfifo`. Starts before the main containers (startup probe), see [mr-do-soloist](../mr-do-soloist/README.md) |
-| `mr-do-upnp` | container | `riemerk/mr-do-upnp-c:1.1.0` | gmediarender UPnP renderer `mrCast` → ALSA file plugin → `upnpfifo` |
+| `mr-do-upnp` | container | `riemerk/mr-do-upnp-c:2acefbd` | gmediarender UPnP renderer `mrCast` → GStreamer resampler (44.1 kHz) → ALSA file plugin → `upnpfifo` |
 | `mr-do-snapserver` | container | `riemerk/mr-do-snapserver:<snapserver>-<snapcast commit>` | reads both FIFOs, serves snapclients and snapweb |
 
 | mr-do-soloist setting | Value |
