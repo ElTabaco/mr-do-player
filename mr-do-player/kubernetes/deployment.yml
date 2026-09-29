@@ -88,12 +88,15 @@ spec:
             # PulseAudio resamples Spotify's 44.1 kHz to 48 kHz = snapserver's stream format
             - name: SAMPLE_RATE
               value: "48000"
+          # The startup probe waits inside the probe (up to 50 s) instead of failing while
+          # the Soloist binary is still downloading; each failed attempt would otherwise
+          # create an "Unhealthy" Warning event. Total budget: 6 x 60 s = 6 min.
           startupProbe:
             exec:
-              command: ["/usr/local/bin/healthcheck.sh"]
-            periodSeconds: 2
-            timeoutSeconds: 5
-            failureThreshold: 90
+              command: ["sh", "-c", "for i in $(seq 1 100); do /usr/local/bin/healthcheck.sh >/dev/null 2>&1 && exit 0; sleep 0.5; done; /usr/local/bin/healthcheck.sh"]
+            periodSeconds: 60
+            timeoutSeconds: 55
+            failureThreshold: 6
           livenessProbe:
             exec:
               command: ["/usr/local/bin/healthcheck.sh"]
