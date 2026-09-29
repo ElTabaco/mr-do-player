@@ -62,11 +62,49 @@ spec:
           volumeMounts:
             - name: shared-data
               mountPath: /tmp/music
+        # Downloads the Spotify Soloist binary into the NFS volume (subPath soloist, /data/bin)
+        # before mr-do-soloist starts, then checks the CDN for a newer build once a day (only
+        # downloads when newer). Soloist builds expire after ~90 days (exit code 10); the
+        # restarted mr-do-soloist container runs the newest downloaded build. Native sidecar:
+        # mr-do-soloist starts after its startupProbe passed (first check done).
+        - name: mr-do-soloist-fetch
+          image: riemerk/mr-do-soloist:17.0-b7022ab-fetch
+          imagePullPolicy: IfNotPresent
+          restartPolicy: Always
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            - name: SOLOIST_UPDATE_INTERVAL
+              value: "86400"
+          startupProbe:
+            exec:
+              command: ["test", "-f", "/tmp/soloist-fetch.ready"]
+            periodSeconds: 2
+            timeoutSeconds: 1
+            failureThreshold: 180
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              cpu: 500m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: player-data
+              mountPath: /data
+              subPath: soloist
+            - name: soloist-fetch-tmp
+              mountPath: /tmp
         # Spotify Connect: Spotify Soloist -> PulseAudio pipe sink -> /tmp/music/spotifyfifo.
         # Native sidecar (restartPolicy: Always): the main containers start only after its
         # startupProbe passes, i.e. PulseAudio already holds the FIFO open, so snapserver
-        # never reads EOF on the Spotify stream. The Soloist binary is downloaded from
-        # Spotify's CDN at start and cached with the login in the NFS volume (subPath soloist).
+        # never reads EOF on the Spotify stream. The Soloist binary (downloaded by
+        # mr-do-soloist-fetch) and the stored login are in the NFS volume (subPath soloist).
         - name: mr-do-soloist
           image: riemerk/mr-do-soloist:17.0-b7022ab
           imagePullPolicy: IfNotPresent
@@ -253,6 +291,10 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 16Mi
+        - name: soloist-fetch-tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Mi
         - name: player-data
           persistentVolumeClaim:
             claimName: mr-do-player-pvc-data
