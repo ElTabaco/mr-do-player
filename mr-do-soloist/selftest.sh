@@ -13,7 +13,12 @@ set -euo pipefail
 IMAGE="${1:?usage: selftest.sh <image>}"
 name="soloist-selftest-$$"
 work="$(mktemp -d)"
-cleanup() { docker rm -f "${name}" >/dev/null 2>&1 || true; rm -rf "${work}"; }
+cleanup() {
+    docker rm -f "${name}" >/dev/null 2>&1 || true
+    # files in the bind mounts are owned by the container user 1000: remove them as root in a container
+    docker run --rm --user 0 --entrypoint rm -v "${work}:/w" "${IMAGE}" -rf /w/music /w/data >/dev/null 2>&1 || true
+    rm -rf "${work}"
+}
 trap cleanup EXIT
 
 mkdir -p "${work}/music" "${work}/data"
@@ -36,6 +41,8 @@ for _ in $(seq 1 60); do
     sleep 2
 done
 if [ "${ok}" != 1 ]; then docker logs "${name}" 2>&1; echo "FAIL: healthcheck never passed"; exit 1; fi
+# every shared library the downloaded Soloist binary links must resolve in the image
+if docker exec "${name}" sh -c 'ldd /data/bin/soloist' | grep "not found"; then echo "FAIL: missing library for soloist"; exit 1; fi
 echo "OK: healthcheck"
 
 # 2 s of noise at 44.1 kHz (Spotify's rate) through PulseAudio -> resampled -> pipe sink (48 kHz)

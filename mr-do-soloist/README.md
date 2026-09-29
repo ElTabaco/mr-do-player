@@ -55,8 +55,10 @@ so no Alpine/musl):
 - PulseAudio modules `module-pipe-sink`, `module-native-protocol-unix`, `libprotocol-native`
 - the shared libraries these link (found with `ldd`), about 15 MB in total
 - `curl` + `ca-certificates` (download; Soloist also needs the CA store)
+- `libatomic1` (linked by the Soloist binary; `libpulse.so.0` is loaded at runtime and already present)
 
-Not included: ALSA plugins, ffmpeg codecs, X11, systemd, the Soloist binary.
+Not included: ALSA plugins, ffmpeg codecs, X11, systemd, the Soloist binary. Soloist loads ffmpeg
+(`libavcodec`/`libavformat`) only if present, for playing local files; Spotify streams do not need it.
 
 ## Processes (entrypoint.sh)
 
@@ -160,7 +162,8 @@ bash mr-do-soloist/selftest.sh riemerk/mr-do-soloist:latest
 `selftest.sh` (also run by the `Docker Image CI soloist` workflow before pushing) starts the image
 with a dummy key, read-only root and user 1000, and checks:
 the Soloist download and start, `healthcheck.sh`, 2 s of 44.1 kHz audio played with `pacat`
-arriving resampled in the FIFO, a clean stop (exit 0) and **no** warning/error line in the log.
+arriving resampled in the FIFO, all libraries of the downloaded binary resolving (`ldd`), a clean stop (exit 0)
+and **no** warning/error line in the log.
 Playback of real Spotify audio needs a real key and account and is not part of the self-test.
 
 ## Expected log

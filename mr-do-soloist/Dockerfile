@@ -51,9 +51,12 @@ LABEL maintainer="riemerk" \
       org.opencontainers.image.description="Spotify Soloist + PulseAudio pipe sink for snapserver"
 
 # curl + CA certificates: Soloist download at start; Soloist itself also needs the CA store
+# libatomic1: linked by the Soloist binary (readelf NEEDED: libc, libm, libatomic, ld-linux).
+#   Soloist also dlopen()s libpulse.so.0 (copied below) and, only for local files, ffmpeg
+#   (libavcodec/libavformat) - not installed, Spotify streams are decoded by Soloist itself.
 # user/group 1000: PulseAudio, D-Bus and Soloist look up the running uid in /etc/passwd
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates curl && \
+    apt-get install -y --no-install-recommends ca-certificates curl libatomic1 && \
     rm -rf /var/lib/apt/lists/* && \
     groupadd -g 1000 soloist && \
     useradd -u 1000 -g 1000 -d /run/soloist/home -M -s /usr/sbin/nologin soloist && \
