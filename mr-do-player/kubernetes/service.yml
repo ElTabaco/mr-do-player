@@ -44,14 +44,5 @@ spec:
       targetPort: snapcast-ctrl
       protocol: TCP
       name: snapcast-ctrl
-    # --- librespot zeroconf (Spotify Connect) ---
-    - port: 42661
-      targetPort: librespot
-      protocol: UDP
-      name: librespot
-    # --- mDNS (5353/UDP, multicast 224.0.0.251) ---
-    # Multicast cannot be DNAT'd by MetalLB; discovery relies on hostNetwork.
-    - port: 5353
-      targetPort: mdns
-      protocol: UDP
-      name: mdns
+    # Spotify Connect (mr-do-soloist): mDNS multicast + a ZeroConf HTTP port chosen by
+    # Soloist at start. Neither can be fronted by MetalLB; discovery relies on hostNetwork.

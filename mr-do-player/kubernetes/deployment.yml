@@ -25,7 +25,7 @@ spec:
       terminationGracePeriodSeconds: 60
       nodeSelector:
         cputype: amd64
-      # hostNetwork MUST stay: librespot (Spotify Connect) and UPnP/DLNA
+      # hostNetwork MUST stay: Soloist (Spotify Connect) and UPnP/DLNA
       # discover peers via mDNS multicast (5353/UDP) and SSDP (1900/UDP).
       # MetalLB L2 DNATs unicast to the LB IP (192.168.0.20) but cannot
       # forward multicast. With hostNetwork the pod binds directly on the
@@ -40,11 +40,12 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       initContainers:
-        # Create the named pipe before either main container opens it.
-        # ALSA's file plugin (Kodi PAPlayer) writes, snapserver reads.
+        # Create the named pipes before any container opens them. snapserver reads both:
+        #   upnpfifo    <- gmediarender (ALSA file plugin)
+        #   spotifyfifo <- mr-do-soloist (PulseAudio module-pipe-sink)
         - name: init-fifo
           image: busybox:1.36
-          command: ["sh", "-c", "umask 0 && rm -f /tmp/music/upnpfifo && mkfifo -m 0666 /tmp/music/upnpfifo"]
+          command: ["sh", "-c", "umask 0 && rm -f /tmp/music/upnpfifo /tmp/music/spotifyfifo && mkfifo -m 0666 /tmp/music/upnpfifo /tmp/music/spotifyfifo"]
           securityContext:
             runAsNonRoot: false
             runAsUser: 0
@@ -59,6 +60,66 @@ spec:
               cpu: 100m
               memory: 32Mi
           volumeMounts:
+            - name: shared-data
+              mountPath: /tmp/music
+        # Spotify Connect: Spotify Soloist -> PulseAudio pipe sink -> /tmp/music/spotifyfifo.
+        # Native sidecar (restartPolicy: Always): the main containers start only after its
+        # startupProbe passes, i.e. PulseAudio already holds the FIFO open, so snapserver
+        # never reads EOF on the Spotify stream. The Soloist binary is downloaded from
+        # Spotify's CDN at start and cached with the login in the NFS volume (subPath soloist).
+        - name: mr-do-soloist
+          image: riemerk/mr-do-soloist:@SOLOIST_TAG@
+          imagePullPolicy: IfNotPresent
+          restartPolicy: Always
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            - name: SOLOIST_DEVICE_NAME
+              value: mrSpot
+            - name: SOLOIST_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mr-do-soloist
+                  key: SOLOIST_API_KEY
+            - name: SOLOIST_CACHE_SIZE_MB
+              value: "300"
+            - name: SOLOIST_INITIAL_VOLUME
+              value: "100"
+            # PulseAudio resamples Spotify's 44.1 kHz to 48 kHz = snapserver's stream format
+            - name: SAMPLE_RATE
+              value: "48000"
+          startupProbe:
+            exec:
+              command: ["/usr/local/bin/healthcheck.sh"]
+            periodSeconds: 2
+            timeoutSeconds: 5
+            failureThreshold: 90
+          livenessProbe:
+            exec:
+              command: ["/usr/local/bin/healthcheck.sh"]
+            periodSeconds: 30
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            # Soloist binary + stored Spotify Connect session (NFS, persistent)
+            - name: player-data
+              mountPath: /data
+              subPath: soloist
+            - name: soloist-cache
+              mountPath: /cache
+            - name: soloist-run
+              mountPath: /run/soloist
             - name: shared-data
               mountPath: /tmp/music
       containers:
@@ -125,14 +186,6 @@ spec:
               name: snapcast-stream
             - containerPort: 1705
               name: snapcast-ctrl
-            # librespot zeroconf port (set via snapserver.conf params)
-            - containerPort: 42661
-              name: librespot
-              protocol: UDP
-            # mDNS for Spotify Connect device discovery (multicast, hostNetwork)
-            - containerPort: 5353
-              name: mdns
-              protocol: UDP
           env:
             - name: TZ
               value: Europe/Berlin
@@ -188,6 +241,13 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
+        - name: soloist-cache
+          emptyDir:
+            sizeLimit: 512Mi
+        - name: soloist-run
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Mi
         - name: player-data
           persistentVolumeClaim:
             claimName: mr-do-player-pvc-data
