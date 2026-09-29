@@ -53,6 +53,7 @@ services:
         environment:
             - TZ=Europe/Berlin
             - SOLOIST_DEVICE_NAME=mrSpot
+            - SAMPLE_RATE=44100
             - SOLOIST_API_KEY=${SOLOIST_API_KEY:?set SOLOIST_API_KEY in .env}
         network_mode: host
         read_only: true
