@@ -30,23 +30,40 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image (amd64, local)
+      # Two targets from one Dockerfile: the distroless runtime (PulseAudio compiled from
+      # source in the builder stage) and the fetch image (curl, downloads the Soloist binary)
+      - name: Build runtime image (amd64, local)
         uses: docker/build-push-action@v6
         with:
           context: .
           file: 'mr-do-soloist/Dockerfile'
+          target: mr-do-soloist
           platforms: linux/amd64
           push: false
           load: true
           tags: tmpsoloist:latest
+          cache-from: type=gha,scope=soloist
+          cache-to: type=gha,scope=soloist,mode=max
+
+      - name: Build fetch image (amd64, local)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: 'mr-do-soloist/Dockerfile'
+          target: mr-do-soloist-fetch
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: tmpsoloist-fetch:latest
 
       - name: Image size
-        run: docker images tmpsoloist:latest
+        run: docker images --format '{{.Repository}}:{{.Tag}} {{.Size}}' | grep tmpsoloist
 
-      # Downloads the real Soloist binary, starts D-Bus + PulseAudio + Soloist, plays audio
-      # through the pipe sink into a FIFO and fails on any warning/error in the log.
+      # Downloads the real Soloist binary with the fetch image, starts PulseAudio + Soloist in the
+      # runtime image, plays audio through the pipe sink into a FIFO and fails on any
+      # warning/error in the logs.
       - name: Self-test
-        run: bash mr-do-soloist/selftest.sh tmpsoloist:latest
+        run: bash mr-do-soloist/selftest.sh tmpsoloist:latest tmpsoloist-fetch:latest
 
       - name: Extract version
         run: |
@@ -56,14 +73,29 @@ jobs:
           echo "image_tag=$IMAGE_TAG" >> $GITHUB_ENV
           echo "Image tag: $IMAGE_TAG"
 
-      # Soloist builds exist for x86_64, arm64 and arm32; the base image supports all three
+      # Soloist builds exist for x86_64, arm64 and arm32; distroless/cc and curlimages/curl
+      # support amd64 and arm64 (the arm64 PulseAudio build runs under QEMU)
       - name: Build and push mr-do-soloist
         uses: docker/build-push-action@v6
         with:
           context: .
           file: 'mr-do-soloist/Dockerfile'
+          target: mr-do-soloist
           platforms: linux/amd64,linux/arm64
           push: true
+          cache-from: type=gha,scope=soloist
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/mr-do-soloist:latest
             ${{ secrets.DOCKER_USERNAME }}/mr-do-soloist:${{ env.image_tag }}
+
+      - name: Build and push mr-do-soloist fetch image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: 'mr-do-soloist/Dockerfile'
+          target: mr-do-soloist-fetch
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/mr-do-soloist:latest-fetch
+            ${{ secrets.DOCKER_USERNAME }}/mr-do-soloist:${{ env.image_tag }}-fetch
