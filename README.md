@@ -19,16 +19,6 @@
 
 [![docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-snapserver)](https://hub.docker.com/r/riemerk/mr-do-snapserver)
 
-## Soloist (Spotify Connect)
-
-Spotify's official headless client [Soloist](https://developer.spotify.com/documentation/soloist) with a
-PulseAudio pipe sink into snapserver. Replaces librespot. See [mr-do-soloist](mr-do-soloist/README.md).
-Two images: `riemerk/mr-do-soloist:<tag>` (distroless runtime with a minimal PulseAudio build) and
-`riemerk/mr-do-soloist:<tag>-fetch` (downloads the Soloist binary, which is not in any image).
-
-[![CI](https://github.com/ElTabaco/mr-do-player/actions/workflows/docker-image-soloist.yml/badge.svg)](https://hub.docker.com/r/riemerk/mr-do-soloist)
-[![docker image size](https://img.shields.io/docker/image-size/riemerk/mr-do-soloist/latest?arch=amd64)](https://hub.docker.com/r/riemerk/mr-do-soloist)
-
 ## Snapclient
 
 [![CI](https://github.com/ElTabaco/mr-do-player/actions/workflows/docker-image-client.yml/badge.svg)](https://hub.docker.com/r/riemerk/mr-do-snapclient)
@@ -60,4 +50,4 @@ Two images: `riemerk/mr-do-soloist:<tag>` (distroless runtime with a minimal Pul
 [![docker pulls](https://img.shields.io/docker/pulls/riemerk/mr-do-upnp-c)](https://hub.docker.com/r/riemerk/mr-do-upnp-c)
 
 ## Main credits: 
-[Snapcast](https://github.com/badaix/snapcast) from badaix, [Spotify Soloist](https://developer.spotify.com/documentation/soloist)
+[Snapcast](https://github.com/badaix/snapcast) from badaix

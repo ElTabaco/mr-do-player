@@ -25,11 +25,10 @@ spec:
       terminationGracePeriodSeconds: 60
       nodeSelector:
         cputype: amd64
-      # hostNetwork MUST stay: Soloist (Spotify Connect) and UPnP/DLNA
-      # discover peers via mDNS multicast (5353/UDP) and SSDP (1900/UDP).
-      # MetalLB L2 DNATs unicast to the LB IP (192.168.0.20) but cannot
-      # forward multicast. With hostNetwork the pod binds directly on the
-      # node's LAN interface, so Spotify phones/clients can find it.
+      # hostNetwork MUST stay: UPnP/DLNA discovery uses SSDP multicast
+      # (1900/UDP). MetalLB L2 DNATs unicast to the LB IP (192.168.0.20) but
+      # cannot forward multicast. With hostNetwork the pod binds directly on
+      # the node's LAN interface, so UPnP controllers can find the renderer.
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       securityContext:
@@ -40,12 +39,11 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       initContainers:
-        # Create the named pipes before any container opens them. snapserver reads both:
-        #   upnpfifo    <- gmediarender (ALSA file plugin)
-        #   spotifyfifo <- mr-do-soloist (PulseAudio module-pipe-sink)
+        # Create the named pipe before any container opens it:
+        #   upnpfifo <- gmediarender (ALSA file plugin), read by snapserver
         - name: init-fifo
           image: busybox:1.36
-          command: ["sh", "-c", "umask 0 && rm -f /tmp/music/upnpfifo /tmp/music/spotifyfifo && mkfifo -m 0666 /tmp/music/upnpfifo /tmp/music/spotifyfifo"]
+          command: ["sh", "-c", "umask 0 && rm -f /tmp/music/upnpfifo && mkfifo -m 0666 /tmp/music/upnpfifo"]
           securityContext:
             runAsNonRoot: false
             runAsUser: 0
@@ -60,112 +58,6 @@ spec:
               cpu: 100m
               memory: 32Mi
           volumeMounts:
-            - name: shared-data
-              mountPath: /tmp/music
-        # Downloads the Spotify Soloist binary into the NFS volume (subPath soloist, /data/bin)
-        # before mr-do-soloist starts, then checks the CDN for a newer build once a day (only
-        # downloads when newer). Soloist builds expire after ~90 days (exit code 10); the
-        # restarted mr-do-soloist container runs the newest downloaded build. Native sidecar:
-        # mr-do-soloist starts after its startupProbe passed (first check done).
-        - name: mr-do-soloist-fetch
-          image: riemerk/mr-do-soloist:17.0-77a1ae7-fetch
-          imagePullPolicy: IfNotPresent
-          restartPolicy: Always
-          env:
-            - name: TZ
-              value: Europe/Berlin
-            - name: SOLOIST_UPDATE_INTERVAL
-              value: "86400"
-          # Waits inside the probe (every 0.5 s, up to 8 s) instead of failing while a new
-          # Soloist build downloads; each failed attempt would log an Unhealthy Warning event.
-          # 36 x 10 s = 6 min for the first download (~13 MB).
-          startupProbe:
-            exec:
-              command: ["sh", "-c", "for i in $(seq 1 16); do test -f /tmp/soloist-fetch.ready && exit 0; sleep 0.5; done; exit 1"]
-            periodSeconds: 10
-            timeoutSeconds: 9
-            failureThreshold: 36
-          resources:
-            requests:
-              cpu: 5m
-              memory: 16Mi
-            limits:
-              cpu: 500m
-              memory: 64Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: ["ALL"]
-          volumeMounts:
-            - name: player-data
-              mountPath: /data
-              subPath: soloist
-            - name: soloist-fetch-tmp
-              mountPath: /tmp
-        # Spotify Connect: Spotify Soloist -> PulseAudio pipe sink -> /tmp/music/spotifyfifo.
-        # Native sidecar (restartPolicy: Always): the main containers start only after its
-        # startupProbe passes, i.e. PulseAudio already holds the FIFO open, so snapserver
-        # never reads EOF on the Spotify stream. The Soloist binary (downloaded by
-        # mr-do-soloist-fetch) and the stored login are in the NFS volume (subPath soloist).
-        - name: mr-do-soloist
-          image: riemerk/mr-do-soloist:17.0-77a1ae7
-          imagePullPolicy: IfNotPresent
-          restartPolicy: Always
-          env:
-            - name: TZ
-              value: Europe/Berlin
-            - name: SOLOIST_DEVICE_NAME
-              value: mrSpot
-            - name: SOLOIST_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: mr-do-soloist
-                  key: SOLOIST_API_KEY
-            - name: SOLOIST_CACHE_SIZE_MB
-              value: "300"
-            - name: SOLOIST_INITIAL_VOLUME
-              value: "100"
-            # = snapserver's stream format; Spotify decodes at 44.1 kHz, so PulseAudio does not resample
-            - name: SAMPLE_RATE
-              value: "44100"
-          # The startup probe waits inside the probe (up to 8 s) instead of failing while
-          # the Soloist binary is still downloading; each failed attempt would otherwise
-          # create an "Unhealthy" Warning event. Keep periodSeconds short: the kubelet's
-          # first probe finds the container not yet running and then waits one full period.
-          # Total budget: 36 x 10 s = 6 min.
-          startupProbe:
-            exec:
-              command: ["sh", "-c", "for i in $(seq 1 16); do /usr/local/bin/healthcheck.sh >/dev/null 2>&1 && exit 0; sleep 0.5; done; /usr/local/bin/healthcheck.sh"]
-            periodSeconds: 10
-            timeoutSeconds: 9
-            failureThreshold: 36
-          livenessProbe:
-            exec:
-              command: ["/usr/local/bin/healthcheck.sh"]
-            periodSeconds: 30
-            timeoutSeconds: 5
-          resources:
-            requests:
-              cpu: 50m
-              memory: 96Mi
-            limits:
-              cpu: 1000m
-              memory: 512Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: ["ALL"]
-          volumeMounts:
-            # Soloist binary + stored Spotify Connect session (NFS, persistent)
-            - name: player-data
-              mountPath: /data
-              subPath: soloist
-            - name: soloist-cache
-              mountPath: /cache
-            - name: soloist-run
-              mountPath: /run/soloist
             - name: shared-data
               mountPath: /tmp/music
       containers:
@@ -295,17 +187,6 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
-        - name: soloist-cache
-          emptyDir:
-            sizeLimit: 512Mi
-        - name: soloist-run
-          emptyDir:
-            medium: Memory
-            sizeLimit: 16Mi
-        - name: soloist-fetch-tmp
-          emptyDir:
-            medium: Memory
-            sizeLimit: 1Mi
         - name: player-data
           persistentVolumeClaim:
             claimName: mr-do-player-pvc-data

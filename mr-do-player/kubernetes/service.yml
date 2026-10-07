@@ -44,5 +44,3 @@ spec:
       targetPort: snapcast-ctrl
       protocol: TCP
       name: snapcast-ctrl
-    # Spotify Connect (mr-do-soloist): mDNS multicast + a ZeroConf HTTP port chosen by
-    # Soloist at start. Neither can be fronted by MetalLB; discovery relies on hostNetwork.

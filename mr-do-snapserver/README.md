@@ -4,12 +4,8 @@
 
 
 Run a [Snapcast](https://github.com/snapcast/snapcast) server as a Docker container.
-Spotify Connect is provided by the separate [mr-do-soloist](../mr-do-soloist/README.md) container
-(Spotify Soloist -> PulseAudio pipe sink -> FIFO), read by snapserver as a `pipe://` stream.
 
 Free to everyone bring your changes with a branch to all like to improve.
-
-_Note: You need a Spotify premium account._
 
 ## Building the images
 
@@ -59,7 +55,6 @@ docker build -t riemer/mr-do-snapserver --build-arg ARCH=arm64 .
 | Persistent state | `$HOME/.config/snapserver/server.json` (Kubernetes: `HOME=/home/snapserver`, NFS subPath `snapserver`) |
 | snapweb | `/usr/share/snapserver/snapweb` (`[http] doc_root`) |
 | `DEVICE_NAME` env | `mr-do-snapserver` |
-| Spotify | `pipe:///tmp/music/spotifyfifo?name=mrSpot&sampleformat=48000:16:2&mode=read&idle_threshold=2000` (written by mr-do-soloist) |
 
 ## Run:
 ```console
@@ -83,4 +78,3 @@ All reused code from main creators is linked direkt in Doker file.
 ### Credits
 * [DockerSnapclient](https://github.com/Saiyato/snapclient_docker)
 * [DockerSnapcast](https://github.com/Saiyato/snapserver_docker)
-* [Spotify Soloist](https://developer.spotify.com/documentation/soloist) (mr-do-soloist)
