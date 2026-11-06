@@ -1,13 +1,3 @@
-
-# scratch review artifacts
-minimax_review_result.md
-run_minimax.py
-minimax_review_prompt.txt
-
-# MiniMax review scratch
-minimax_review_prompt.txt
-minimax_review_result.md
-run_minimax*.py
 # docker compose: Soloist API key and runtime data
 mr-do-player/docker/.env
 mr-do-player/docker/config/
